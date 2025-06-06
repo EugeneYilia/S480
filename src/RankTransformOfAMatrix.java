@@ -87,6 +87,11 @@ class Solution {
         }
 
         @Override
+        public int hashCode() {
+            return Objects.hash(row, column);
+        }
+
+        @Override
         public String toString() {
             return "["+row+","+column+","+value+","+rankValue+"]";
         }
@@ -178,7 +183,7 @@ class Solution {
             currentPairList.forEach(pair -> {
                 var minRowPositions = new ArrayList<Integer>();
                 var minValue = 9999;
-                var currentValue = matrix[pair.row][pair.column];
+                var currentValue = pair.value;
 
                 for (int i = 0; i < rowCount; i++) {
                     if(i == pair.row){
