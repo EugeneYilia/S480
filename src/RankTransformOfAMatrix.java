@@ -73,6 +73,15 @@ class Solution {
         public Pair(
                 int row,
                 int column,
+                int value){
+            this.row = row;
+            this.column = column;
+            this.value = value;
+        }
+
+        public Pair(
+                int row,
+                int column,
                 int value,
                 int rankValue) {
             this.row = row;
@@ -116,9 +125,10 @@ class Solution {
             rowMap.put(i, rowTreeMap);
 
             for (int j = 0; j < colCount; j++) {
-                var list = rowTreeMap.getOrDefault(matrix[i][j], new ArrayList<>());
-                list.add(new Pair(i, j));
-                rowTreeMap.put(matrix[i][j], list);
+                var value = matrix[i][j];
+                var list = rowTreeMap.getOrDefault(value, new ArrayList<>());
+                list.add(new Pair(i, j, value));
+                rowTreeMap.put(value, list);
             }
         }
 
@@ -128,9 +138,10 @@ class Solution {
             colMap.put(i, colTreeMap);
 
             for (int j = 0; j < rowCount; j++) {
-                var list = colTreeMap.getOrDefault(matrix[j][i], new ArrayList<>());
-                list.add(new Pair(j, i));
-                colTreeMap.put(matrix[j][i], list);
+                var value = matrix[j][i];
+                var list = colTreeMap.getOrDefault(value, new ArrayList<>());
+                list.add(new Pair(j, i, value));
+                colTreeMap.put(value, list);
             }
         }
 
@@ -207,63 +218,40 @@ class Solution {
             var refPairList = pairList;
 
             currentPairList.forEach(pair -> {
-                var minRowPositions = new ArrayList<Integer>();
-                var minValue = 9999;
-                var currentValue = pair.value;
-
-                for (int i = 0; i < rowCount; i++) {
-                    if(i == pair.row){
-                        continue;
-                    }
-
-                    if(matrix[i][pair.column] > currentValue && matrix[i][pair.column] < minValue){
-                        minRowPositions.clear();
-                        minRowPositions.add(i);
-                        minValue = matrix[i][pair.column];
-                    } else if (matrix[i][pair.column] > currentValue && matrix[i][pair.column] == minValue){
-                        minRowPositions.add(i);
-                    }
-
-                    if (matrix[i][pair.column] == currentValue){
-                        if(rank[pair.row][pair.column] > rank[i][pair.column]) {
-                                refPairList.add(new Pair(i, pair.column, matrix[i][pair.column], pair.rankValue));
-                        }
-                    }
-                }
-
                 var specificRowMap = rowMap.get(pair.row);
                 var specificColMap = colMap.get(pair.column);
 
-                var higherCol = specificColMap.ceilingEntry(pair.value);
-                var higherRow = specificRowMap.ceilingEntry(pair.value);
-                var sameValueRow = specificRowMap.get(pair.value);
-                var sameValueCol = specificColMap.get(pair.value);
+                var higherColKey = specificColMap.higherKey(pair.value);
+                var higherCol = higherColKey == null ? new ArrayList<Pair>() : specificColMap.getOrDefault(higherColKey, new ArrayList<Pair>());
 
-                var minColPositions = new ArrayList<Integer>();
-                var minColValue = 9999;
-                for (int j = 0; j < colCount; j++) {
-                    if(j == pair.column){
-                        continue;
-                    }
+                var higherRowKey = specificRowMap.higherKey(pair.value);
+                var higherRow = higherRowKey == null ? new ArrayList<Pair>() : specificRowMap.getOrDefault(higherRowKey, new ArrayList<Pair>());
+                var sameValueRow = specificRowMap.getOrDefault(pair.value, new ArrayList<>());
+                var sameValueCol = specificColMap.getOrDefault(pair.value, new ArrayList<>());
 
-                    if(matrix[pair.row][j] > currentValue && matrix[pair.row][j] < minColValue){
-                        minColPositions.clear();
-                        minColPositions.add(j);
-                        minColValue = matrix[pair.row][j];
-                    } else if (matrix[pair.row][j] > currentValue && matrix[pair.row][j] == minValue){
-                        minColPositions.add(j);
-                    }
+                for (int i = 0; i< higherRow.size(); i++) {
+                    var currentPair = higherRow.get(i);
+                    refPairList.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
+                }
 
-                    if (matrix[pair.row][j] == currentValue){
-                        if(rank[pair.row][pair.column] > rank[pair.row][j]) {
-                            refPairList.add(new Pair(pair.row, j, matrix[pair.row][j], pair.rankValue));
-                        }
+                for (int i = 0; i< higherCol.size(); i++) {
+                    var currentPair = higherCol.get(i);
+                    refPairList.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
+                }
+
+                for (int i = 0; i < sameValueRow.size(); i++) {
+                    var currentPair = sameValueRow.get(i);
+                    if(pair.rankValue > rank[currentPair.row][currentPair.column]){
+                        refPairList.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
                     }
                 }
 
-                minRowPositions.forEach(row -> refPairList.add(new Pair(row, pair.column, matrix[row][pair.column], pair.rankValue + 1)));
-
-                minColPositions.forEach(col -> refPairList.add(new Pair(pair.row, col, matrix[pair.row][col], pair.rankValue + 1)));
+                for (int i = 0; i < sameValueCol.size(); i++) {
+                    var currentPair = sameValueCol.get(i);
+                    if(pair.rankValue > rank[currentPair.row][currentPair.column]){
+                        refPairList.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
+                    }
+                }
             });
 
             for (Pair currentPair : pairList) {
