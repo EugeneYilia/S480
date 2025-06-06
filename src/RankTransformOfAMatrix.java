@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class RankTransformOfAMatrix {
     public static void main(String[] args) {
+
         Solution solution = new Solution();
 //        System.out.println("result: " + Arrays.deepToString(solution.matrixRankTransform(new int[][]{{1, 2}, {3, 4}})));
 //        System.out.println("result: " + Arrays.deepToString(solution.matrixRankTransform(new int[][]{{7,7}, {7,7}})));
@@ -26,7 +27,7 @@ public class RankTransformOfAMatrix {
 //                {-40, 43, -22, -19, -4, 23, -18}
 //        })));
 
-        System.out.println("result: " + Arrays.deepToString(solution.matrixRankTransform(new int[][]{
+        var originalMatrix = new int[][]{
                 {25, 8, 31, 42, -39, 8, 31, -10, 33, -44, 7, -30, 9, 44, 15, 26},
                 {-3, -48, -17, -18, 9, -12, -21, 10, 1, 44, -17, 14, -27, 48, -21, -6},
                 {49, 28, 27, -18, -31, 4, -13, 34, 49, 48, 47, -18, 33, 40, 15, 38},
@@ -43,7 +44,13 @@ public class RankTransformOfAMatrix {
                 {-3, 12, 7, 14, -7, 8, -37, -34, -7, -12, 39, -38, 1, 44, 27, -34},
                 {-47, 4, 7, -2, -43, -32, 27, 2, -43, -8, -33, 14, 49, -48, -5, 30},
                 {-15, 8, -33, -26, -23, -32, -25, 22, 13, -20, -9, 26, 29, 4, -1, 2}
-        })));
+        };
+        var result = solution.matrixRankTransform(originalMatrix);
+
+        System.out.println("Result:");
+        Solution.printFormattedMatrix(result);
+
+        System.out.println("Answer is right: " + Solution.areMatricesEqual(result, new Solution2().matrixRankTransform(originalMatrix)));
     }
 }
 
@@ -53,8 +60,6 @@ class Solution {
         public int row;
         public int column;
         public int value;
-        public boolean isUseful = true;
-        public boolean useLastValue = false;
         public int rankValue;
         public boolean canBeUsed = true;
 
@@ -91,8 +96,6 @@ class Solution {
         System.out.println("Original Matrix");
         printFormattedMatrix(matrix);
 
-        var matrixSize = matrix.length * matrix[0].length;
-        var filledSize = 0;
         var pairList = new ArrayList<Pair>();
 
         var roundTurn = 2;
@@ -120,7 +123,6 @@ class Solution {
                 }
 
                 if(isMinimal){
-                    filledSize++;
                     pairList.add(new Pair(i,j, matrix[i][j], 1));
                 }
             }
@@ -158,12 +160,9 @@ class Solution {
         }
 
         pairList = pairList.stream().filter(pair -> pair.canBeUsed).collect(Collectors.toCollection(ArrayList::new));
-//        System.out.println("Init" + Arrays.deepToString(rank));
-//        System.out.println(pairList);
-//        System.out.println();
 
         while (!pairList.isEmpty()){
-//            System.out.println("start round " + roundTurn);
+            System.out.println("start round " + roundTurn);
             var currentPairList = new ArrayList<Pair>(pairList);
             pairList.clear();
             var refPairList = pairList;
@@ -216,57 +215,23 @@ class Solution {
                 }
 
                 minRowPositions.forEach(row -> {
-//                    if(!currentPairList.contains(new Pair(row,pair.column))){
                         refPairList.add(new Pair(row, pair.column, matrix[row][pair.column], pair.rankValue + 1));
-//                    }
                 });
 
                 minColPositions.forEach(col -> {
-//                    if(!currentPairList.contains(new Pair(pair.row,col))){
                         refPairList.add(new Pair(pair.row, col, matrix[pair.row][col], pair.rankValue + 1));
-//                    }
                 });
             });
-
-
-//            System.out.println(roundTurn + "  preparedData: " + pairList);
-
-
-//            for (int i = 0; i < pairList.size(); i++) {
-//                var currentPair = pairList.get(i);
-//                var currentPairValue = matrix[currentPair.row][currentPair.column];
-//                for (var j = 0; j < pairList.size(); j++) {
-//                    if(i == j){
-//                        continue;
-//                    }
-//                    var currentPair2 = pairList.get(j);
-//                    var currentPair2Value = matrix[currentPair2.row][currentPair2.column];
-//
-//                    if(currentPair.row == currentPair2.row || currentPair.column == currentPair2.column){
-//                        if(currentPairValue < currentPair2Value){
-//                            currentPair2.isUseful = false;
-//                        } else if(currentPairValue > currentPair2Value){
-//                            currentPair.isUseful = false;
-//                        }
-//                    }
-//
-//                }
-//            }
-//
-//            pairList = pairList.stream().filter(pair -> pair.isUseful).collect(Collectors.toCollection(ArrayList::new));
-
 
             for (Pair currentPair : pairList) {
                 if(rank[currentPair.row][currentPair.column] < currentPair.rankValue) {
                     rank[currentPair.row][currentPair.column] = currentPair.rankValue;
-                    filledSize ++;
                 } else {
                     currentPair.rankValue = rank[currentPair.row][currentPair.column];
                 }
             }
 
             roundTurn++;
-//            System.out.println(Arrays.deepToString(rank));
 
             System.out.println("Original:");
             printFormattedMatrix(matrix);
@@ -274,7 +239,6 @@ class Solution {
 
             System.out.println("Rank:");
             printFormattedMatrix(rank);
-//            System.out.println("FilledSize: " + filledSize + "  allSize: " + matrixSize);
             System.out.println();
         }
 
@@ -288,5 +252,26 @@ class Solution {
             }
             System.out.println();
         }
+    }
+
+    public static boolean areMatricesEqual(int[][] matrix1, int[][] matrix2) {
+        // 检查是否为 null
+        if (matrix1 == null || matrix2 == null) return false;
+
+        // 检查行数是否相同
+        if (matrix1.length != matrix2.length) return false;
+
+        for (int i = 0; i < matrix1.length; i++) {
+            // 检查列数是否相同
+            if (matrix1[i].length != matrix2[i].length) return false;
+
+            for (int j = 0; j < matrix1[i].length; j++) {
+                if (matrix1[i][j] != matrix2[i][j]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
