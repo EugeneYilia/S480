@@ -250,6 +250,7 @@ class Solution {
 //            printFormattedMatrix(rank);
 //            System.out.println();
         }
+        System.out.println("Used round turn: " + roundTurn);
 
         return rank;
     }
