@@ -187,34 +187,28 @@ class Solution {
         for (int i = 0; i < pairList.size(); i++) {
             var pair = pairList.get(i);
             var currentValue = pair.value;
-            var canBeUsed = true;
+            var specificRowMap = rowMap.get(pair.row);
+            var specificColMap = colMap.get(pair.column);
+            var sameValueRow = specificRowMap.getOrDefault(currentValue, new ArrayList<>());
+            var sameValueCol = specificColMap.getOrDefault(currentValue, new ArrayList<>());
 
-            for (int row = 0; row < rowCount; row++) {
-                if (row != pair.row){
-                    if (currentValue == matrix[row][pair.column]) {
-                        if(!pairList.contains(new Pair(row, pair.column))){
-                            canBeUsed = false;
-                            break;
-                        }
+            for (Pair p: sameValueRow){
+                if(!pairList.contains(p)){
+                    pair.canBeUsed = false;
+                    break;
+                }
+            }
+
+            if(pair.canBeUsed) {
+                for (Pair p : sameValueCol) {
+                    if (!pairList.contains(p)) {
+                        pair.canBeUsed = false;
+                        break;
                     }
                 }
             }
 
-            if(canBeUsed) {
-                for (int col = 0; col < colCount; col++) {
-                    if (col != pair.column) {
-                        if (currentValue == matrix[pair.row][col]) {
-                            if (!pairList.contains(new Pair(pair.row, col))) {
-                                canBeUsed = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            pair.canBeUsed = canBeUsed;
-            if (canBeUsed){
+            if (pair.canBeUsed){
                 rank[pair.row][pair.column] = pair.rankValue;
             }
         }
