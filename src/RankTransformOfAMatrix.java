@@ -108,6 +108,32 @@ class Solution {
         int rowCount = matrix.length;
         int colCount = matrix[0].length;
 
+        var rowMap = new HashMap<Integer, TreeMap<Integer, ArrayList<Pair>>>();
+        var colMap = new HashMap<Integer, TreeMap<Integer, ArrayList<Pair>>>();
+
+        for (int i = 0; i < rowCount; i++) {
+            var rowTreeMap = new TreeMap<Integer, ArrayList<Pair>>();
+            rowMap.put(i, rowTreeMap);
+
+            for (int j = 0; j < colCount; j++) {
+                var list = rowTreeMap.getOrDefault(matrix[i][j], new ArrayList<>());
+                list.add(new Pair(i, j));
+                rowTreeMap.put(matrix[i][j], list);
+            }
+        }
+
+
+        for (int i = 0; i < colCount; i++) {
+            var colTreeMap = new TreeMap<Integer, ArrayList<Pair>>();
+            colMap.put(i, colTreeMap);
+
+            for (int j = 0; j < rowCount; j++) {
+                var list = colTreeMap.getOrDefault(matrix[j][i], new ArrayList<>());
+                list.add(new Pair(j, i));
+                colTreeMap.put(matrix[j][i], list);
+            }
+        }
+
         var rank = new int[rowCount][colCount];
 
         for (int i = 0; i < rowCount; i++) {
@@ -204,6 +230,14 @@ class Solution {
                         }
                     }
                 }
+
+                var specificRowMap = rowMap.get(pair.row);
+                var specificColMap = colMap.get(pair.column);
+
+                var higherCol = specificColMap.ceilingEntry(pair.value);
+                var higherRow = specificRowMap.ceilingEntry(pair.value);
+                var sameValueRow = specificRowMap.get(pair.value);
+                var sameValueCol = specificColMap.get(pair.value);
 
                 var minColPositions = new ArrayList<Integer>();
                 var minColValue = 9999;
