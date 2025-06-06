@@ -7,17 +7,19 @@ public class RankTransformOfAMatrix {
     public static void main(String[] args) {
 
         Solution solution = new Solution();
-//        System.out.println("result: " + Arrays.deepToString(solution.matrixRankTransform(new int[][]{{1, 2}, {3, 4}})));
-//        System.out.println("result: " + Arrays.deepToString(solution.matrixRankTransform(new int[][]{{7,7}, {7,7}})));
-//
-//        System.out.println("result: " + Arrays.deepToString(solution.matrixRankTransform(new int[][]{{20,-21,14}, {-19,4,19}, {22,-47,24}, {-19,4,19}})));
-//        System.out.println("result: " + Arrays.deepToString(solution.matrixRankTransform(new int[][]{
+//        var originalMatrix = new int[][]{{1, 2}, {3, 4}};
+
+//        var originalMatrix = new int[][]{{7,7}, {7,7}};
+
+//        var originalMatrix = new int[][]{{20,-21,14}, {-19,4,19}, {22,-47,24}, {-19,4,19}};
+
+//        var originalMatrix = new int[][]{
 //                {-37,-50,-3,44},
 //                {-37,46,13,-32},
 //                {47,-42,-3,-40},
-//                {-17,-22,-39,24}})));
+//                {-17,-22,-39,24}};
 
-//        System.out.println("result: " + Arrays.deepToString(solution.matrixRankTransform(new int[][]{
+//        var originalMatrix = new int[][]{
 //                {-2, -35, -32, -5, -30, 33, -12},
 //                {7, 2, -43, 4, -49, 14, 17},
 //                {4, 23, -6, -15, -24, -17, 6},
@@ -25,7 +27,7 @@ public class RankTransformOfAMatrix {
 //                {-50, -47, 44, 43, -22, 33, -36},
 //                {-13, 34, 49, 24, 23, -2, -35},
 //                {-40, 43, -22, -19, -4, 23, -18}
-//        })));
+//        };
 
         var originalMatrix = new int[][]{
                 {25, 8, 31, 42, -39, 8, 31, -10, 33, -44, 7, -30, 9, 44, 15, 26},
@@ -117,62 +119,71 @@ class Solution {
         int rowCount = matrix.length;
         int colCount = matrix[0].length;
 
+        var rank = new int[rowCount][colCount];
+
         var rowMap = new HashMap<Integer, TreeMap<Integer, ArrayList<Pair>>>();
         var colMap = new HashMap<Integer, TreeMap<Integer, ArrayList<Pair>>>();
 
+        var minimalRowPairs = new HashSet<Pair>();
         for (int i = 0; i < rowCount; i++) {
             var rowTreeMap = new TreeMap<Integer, ArrayList<Pair>>();
             rowMap.put(i, rowTreeMap);
+
+            var minimalRowValue = 999;
+            var minimalRowIndex = new ArrayList<Integer>();
 
             for (int j = 0; j < colCount; j++) {
                 var value = matrix[i][j];
                 var list = rowTreeMap.getOrDefault(value, new ArrayList<>());
                 list.add(new Pair(i, j, value));
                 rowTreeMap.put(value, list);
+
+                if (value < minimalRowValue) {
+                    minimalRowIndex.clear();
+                    minimalRowValue = value;
+                    minimalRowIndex.add(j);
+                } else if (value == minimalRowValue) {
+                    minimalRowIndex.add(j);
+                }
+            }
+
+            for (Integer index : minimalRowIndex) {
+                minimalRowPairs.add(new Pair(i, index, minimalRowValue, 1));
             }
         }
 
-
+        var minimalColumnPairs = new HashSet<Pair>();
         for (int i = 0; i < colCount; i++) {
             var colTreeMap = new TreeMap<Integer, ArrayList<Pair>>();
             colMap.put(i, colTreeMap);
+
+            var minimalColumnValue = 999;
+            var minimalColumnIndex = new ArrayList<Integer>();
 
             for (int j = 0; j < rowCount; j++) {
                 var value = matrix[j][i];
                 var list = colTreeMap.getOrDefault(value, new ArrayList<>());
                 list.add(new Pair(j, i, value));
                 colTreeMap.put(value, list);
+
+                if (value < minimalColumnValue) {
+                    minimalColumnIndex.clear();
+                    minimalColumnValue = value;
+                    minimalColumnIndex.add(j);
+                } else if (value == minimalColumnValue) {
+                    minimalColumnIndex.add(j);
+                }
+            }
+
+            for (Integer index : minimalColumnIndex) {
+                minimalColumnPairs.add(new Pair(index, i, minimalColumnValue, 1));
             }
         }
 
-        var rank = new int[rowCount][colCount];
+        var intersectedPairs = new HashSet<Pair>(minimalRowPairs);
+        intersectedPairs.retainAll(minimalColumnPairs);
 
-        for (int i = 0; i < rowCount; i++) {
-            for (int j = 0; j < colCount; j++) {
-                var currentValue = matrix[i][j];
-
-                var isMinimal = true;
-                for (int row = 0; row < rowCount; row++) {
-                    if (currentValue > matrix[row][j]) {
-                        isMinimal = false;
-                        break;
-                    }
-                }
-
-                if(isMinimal) {
-                    for (int col = 0; col < colCount; col++) {
-                        if (currentValue > matrix[i][col]) {
-                            isMinimal = false;
-                            break;
-                        }
-                    }
-                }
-
-                if(isMinimal){
-                    pairList.add(new Pair(i, j, matrix[i][j], 1));
-                }
-            }
-        }
+        pairList.addAll(intersectedPairs);
 
         for (int i = 0; i < pairList.size(); i++) {
             var pair = pairList.get(i);
@@ -229,26 +240,22 @@ class Solution {
                 var sameValueRow = specificRowMap.getOrDefault(pair.value, new ArrayList<>());
                 var sameValueCol = specificColMap.getOrDefault(pair.value, new ArrayList<>());
 
-                for (int i = 0; i< higherRow.size(); i++) {
-                    var currentPair = higherRow.get(i);
+                for (Pair currentPair : higherRow) {
                     refPairList.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
                 }
 
-                for (int i = 0; i< higherCol.size(); i++) {
-                    var currentPair = higherCol.get(i);
+                for (Pair currentPair : higherCol) {
                     refPairList.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
                 }
 
-                for (int i = 0; i < sameValueRow.size(); i++) {
-                    var currentPair = sameValueRow.get(i);
-                    if(pair.rankValue > rank[currentPair.row][currentPair.column]){
+                for (Pair currentPair : sameValueRow) {
+                    if (pair.rankValue > rank[currentPair.row][currentPair.column]) {
                         refPairList.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
                     }
                 }
 
-                for (int i = 0; i < sameValueCol.size(); i++) {
-                    var currentPair = sameValueCol.get(i);
-                    if(pair.rankValue > rank[currentPair.row][currentPair.column]){
+                for (Pair currentPair : sameValueCol) {
+                    if (pair.rankValue > rank[currentPair.row][currentPair.column]) {
                         refPairList.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
                     }
                 }
