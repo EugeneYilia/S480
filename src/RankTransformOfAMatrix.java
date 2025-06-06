@@ -93,8 +93,8 @@ class Solution {
     }
 
     public int[][] matrixRankTransform(int[][] matrix) {
-        System.out.println("Original Matrix");
-        printFormattedMatrix(matrix);
+//        System.out.println("Original Matrix");
+//        printFormattedMatrix(matrix);
 
         var pairList = new ArrayList<Pair>();
 
@@ -113,12 +113,16 @@ class Solution {
                 for (int row = 0; row < rowCount; row++) {
                     if (currentValue > matrix[row][j]) {
                         isMinimal = false;
+                        break;
                     }
                 }
 
-                for (int col = 0; col < colCount; col++) {
-                    if (currentValue > matrix[i][col]) {
-                        isMinimal = false;
+                if(isMinimal) {
+                    for (int col = 0; col < colCount; col++) {
+                        if (currentValue > matrix[i][col]) {
+                            isMinimal = false;
+                            break;
+                        }
                     }
                 }
 
@@ -138,16 +142,20 @@ class Solution {
                     if (currentValue == matrix[row][pair.column]) {
                         if(!pairList.contains(new Pair(row,pair.column))){
                             canBeUsed = false;
+                            break;
                         }
                     }
                 }
             }
 
-            for (int col = 0; col < colCount; col++) {
-                if (col != pair.column){
-                    if (currentValue == matrix[pair.row][col]) {
-                        if(!pairList.contains(new Pair(pair.row,col))){
-                            canBeUsed = false;
+            if(canBeUsed) {
+                for (int col = 0; col < colCount; col++) {
+                    if (col != pair.column) {
+                        if (currentValue == matrix[pair.row][col]) {
+                            if (!pairList.contains(new Pair(pair.row, col))) {
+                                canBeUsed = false;
+                                break;
+                            }
                         }
                     }
                 }
@@ -162,7 +170,7 @@ class Solution {
         pairList = pairList.stream().filter(pair -> pair.canBeUsed).collect(Collectors.toCollection(ArrayList::new));
 
         while (!pairList.isEmpty()){
-            System.out.println("start round " + roundTurn);
+//            System.out.println("start round " + roundTurn);
             var currentPairList = new ArrayList<Pair>(pairList);
             pairList.clear();
             var refPairList = pairList;
@@ -233,13 +241,13 @@ class Solution {
 
             roundTurn++;
 
-            System.out.println("Original:");
-            printFormattedMatrix(matrix);
-            System.out.println();
+//            System.out.println("Original:");
+//            printFormattedMatrix(matrix);
+//            System.out.println();
 
-            System.out.println("Rank:");
-            printFormattedMatrix(rank);
-            System.out.println();
+//            System.out.println("Rank:");
+//            printFormattedMatrix(rank);
+//            System.out.println();
         }
 
         return rank;
