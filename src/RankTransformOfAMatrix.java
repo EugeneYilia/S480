@@ -111,7 +111,7 @@ class Solution {
 //        System.out.println("Original Matrix");
 //        printFormattedMatrix(matrix);
 
-        var pairList = new ArrayList<Pair>();
+        var pairSet = new ArrayList<Pair>();
 
         var roundTurn = 2;
 
@@ -182,10 +182,9 @@ class Solution {
         var intersectedPairs = new HashSet<Pair>(minimalRowPairs);
         intersectedPairs.retainAll(minimalColumnPairs);
 
-        pairList.addAll(intersectedPairs);
+        pairSet.addAll(intersectedPairs);
 
-        for (int i = 0; i < pairList.size(); i++) {
-            var pair = pairList.get(i);
+        for (Pair pair : pairSet) {
             var currentValue = pair.value;
             var specificRowMap = rowMap.get(pair.row);
             var specificColMap = colMap.get(pair.column);
@@ -193,7 +192,7 @@ class Solution {
             var sameValueCol = specificColMap.getOrDefault(currentValue, new ArrayList<>());
 
             for (Pair p: sameValueRow){
-                if(!pairList.contains(p)){
+                if(!pairSet.contains(p)){
                     pair.canBeUsed = false;
                     break;
                 }
@@ -201,7 +200,7 @@ class Solution {
 
             if(pair.canBeUsed) {
                 for (Pair p : sameValueCol) {
-                    if (!pairList.contains(p)) {
+                    if (!pairSet.contains(p)) {
                         pair.canBeUsed = false;
                         break;
                     }
@@ -213,13 +212,13 @@ class Solution {
             }
         }
 
-        pairList.removeIf(pair -> !pair.canBeUsed);
+        pairSet.removeIf(pair -> !pair.canBeUsed);
 
-        while (!pairList.isEmpty()){
+        while (!pairSet.isEmpty()){
 //            System.out.println("start round " + roundTurn);
-            var currentPairList = new ArrayList<>(pairList);
-            pairList.clear();
-            var refPairList = pairList;
+            var currentPairList = new ArrayList<>(pairSet);
+            pairSet.clear();
+            var refPairList = pairSet;
 
             currentPairList.forEach(pair -> {
                 var specificRowMap = rowMap.get(pair.row);
@@ -254,7 +253,7 @@ class Solution {
                 }
             });
 
-            for (Pair currentPair : pairList) {
+            for (Pair currentPair : pairSet) {
                 if(rank[currentPair.row][currentPair.column] < currentPair.rankValue) {
                     rank[currentPair.row][currentPair.column] = currentPair.rankValue;
                 } else {
