@@ -56,7 +56,7 @@ public class RankTransformOfAMatrix {
 
 
 class Solution {
-    class Pair{
+    static class Pair{
         public int row;
         public int column;
         public int value;
@@ -132,7 +132,7 @@ class Solution {
                 }
 
                 if(isMinimal){
-                    pairList.add(new Pair(i,j, matrix[i][j], 1));
+                    pairList.add(new Pair(i, j, matrix[i][j], 1));
                 }
             }
         }
@@ -145,7 +145,7 @@ class Solution {
             for (int row = 0; row < rowCount; row++) {
                 if (row != pair.row){
                     if (currentValue == matrix[row][pair.column]) {
-                        if(!pairList.contains(new Pair(row,pair.column))){
+                        if(!pairList.contains(new Pair(row, pair.column))){
                             canBeUsed = false;
                             break;
                         }
@@ -176,7 +176,7 @@ class Solution {
 
         while (!pairList.isEmpty()){
 //            System.out.println("start round " + roundTurn);
-            var currentPairList = new ArrayList<Pair>(pairList);
+            var currentPairList = new ArrayList<>(pairList);
             pairList.clear();
             var refPairList = pairList;
 
@@ -227,13 +227,9 @@ class Solution {
                     }
                 }
 
-                minRowPositions.forEach(row -> {
-                        refPairList.add(new Pair(row, pair.column, matrix[row][pair.column], pair.rankValue + 1));
-                });
+                minRowPositions.forEach(row -> refPairList.add(new Pair(row, pair.column, matrix[row][pair.column], pair.rankValue + 1)));
 
-                minColPositions.forEach(col -> {
-                        refPairList.add(new Pair(pair.row, col, matrix[pair.row][col], pair.rankValue + 1));
-                });
+                minColPositions.forEach(col -> refPairList.add(new Pair(pair.row, col, matrix[pair.row][col], pair.rankValue + 1)));
             });
 
             for (Pair currentPair : pairList) {
