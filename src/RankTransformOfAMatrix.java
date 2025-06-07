@@ -1,9 +1,12 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class RankTransformOfAMatrix {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         Solution solution = new Solution();
 //        var originalMatrix = new int[][]{{1, 2}, {3, 4}};
@@ -28,30 +31,63 @@ public class RankTransformOfAMatrix {
 //                {-40, 43, -22, -19, -4, 23, -18}
 //        };
 
-        var originalMatrix = new int[][]{
-                {25, 8, 31, 42, -39, 8, 31, -10, 33, -44, 7, -30, 9, 44, 15, 26},
-                {-3, -48, -17, -18, 9, -12, -21, 10, 1, 44, -17, 14, -27, 48, -21, -6},
-                {49, 28, 27, -18, -31, 4, -13, 34, 49, 48, 47, -18, 33, 40, 15, 38},
-                {5, -28, -49, -38, 1, 32, -25, -50, 29, -32, 35, -46, -43, 48, -49, -6},
-                {-27, -24, 23, -14, -47, -12, 7, 6, 25, -16, 47, -26, 13, -12, -33, -18},
-                {45, -48, 3, -26, -23, -36, -17, 38, 17, 12, 15, 46, 37, 40, 47, 26},
-                {-19, -24, -21, -2, -7, -48, 47, 30, 5, -8, 23, -46, 21, -32, -33, -26},
-                {-27, 32, 27, -26, 21, -32, -49, -10, 5, 20, -29, 46, -43, -44, 39, 22},
-                {-43, 48, 27, 26, -27, 12, -1, -10, -27, 12, -29, -34, 41, -28, -25, -30},
-                {25, -36, 35, -26, 37, -20, 31, 14, -19, -40, -29, -2, -39, -28, 11, 46},
-                {49, -32, -29, -6, -47, 32, -17, -18, -23, 24, 23, 22, -47, -44, 27, 14},
-                {37, -44, -33, -18, -47, 24, -17, -46, -43, -32, 15, -46, -27, -8, -25, 46},
-                {41, -40, 31, -30, 13, -24, -29, 22, -15, -16, 47, 2, -39, 4, -25, -42},
-                {-3, 12, 7, 14, -7, 8, -37, -34, -7, -12, 39, -38, 1, 44, 27, -34},
-                {-47, 4, 7, -2, -43, -32, 27, 2, -43, -8, -33, 14, 49, -48, -5, 30},
-                {-15, 8, -33, -26, -23, -32, -25, 22, 13, -20, -9, 26, 29, 4, -1, 2}
-        };
+//        var originalMatrix = new int[][]{
+//                {25, 8, 31, 42, -39, 8, 31, -10, 33, -44, 7, -30, 9, 44, 15, 26},
+//                {-3, -48, -17, -18, 9, -12, -21, 10, 1, 44, -17, 14, -27, 48, -21, -6},
+//                {49, 28, 27, -18, -31, 4, -13, 34, 49, 48, 47, -18, 33, 40, 15, 38},
+//                {5, -28, -49, -38, 1, 32, -25, -50, 29, -32, 35, -46, -43, 48, -49, -6},
+//                {-27, -24, 23, -14, -47, -12, 7, 6, 25, -16, 47, -26, 13, -12, -33, -18},
+//                {45, -48, 3, -26, -23, -36, -17, 38, 17, 12, 15, 46, 37, 40, 47, 26},
+//                {-19, -24, -21, -2, -7, -48, 47, 30, 5, -8, 23, -46, 21, -32, -33, -26},
+//                {-27, 32, 27, -26, 21, -32, -49, -10, 5, 20, -29, 46, -43, -44, 39, 22},
+//                {-43, 48, 27, 26, -27, 12, -1, -10, -27, 12, -29, -34, 41, -28, -25, -30},
+//                {25, -36, 35, -26, 37, -20, 31, 14, -19, -40, -29, -2, -39, -28, 11, 46},
+//                {49, -32, -29, -6, -47, 32, -17, -18, -23, 24, 23, 22, -47, -44, 27, 14},
+//                {37, -44, -33, -18, -47, 24, -17, -46, -43, -32, 15, -46, -27, -8, -25, 46},
+//                {41, -40, 31, -30, 13, -24, -29, 22, -15, -16, 47, 2, -39, 4, -25, -42},
+//                {-3, 12, 7, 14, -7, 8, -37, -34, -7, -12, 39, -38, 1, 44, 27, -34},
+//                {-47, 4, 7, -2, -43, -32, 27, 2, -43, -8, -33, 14, 49, -48, -5, 30},
+//                {-15, 8, -33, -26, -23, -32, -25, 22, 13, -20, -9, 26, 29, 4, -1, 2}
+//        };
+
+
+        var originalMatrix = parseMatrix(
+                Files.readString(Path.of("data"))
+        );
         var result = solution.matrixRankTransform(originalMatrix);
 
         System.out.println("Result:");
         Solution.printFormattedMatrix(result);
 
         System.out.println("Answer is right: " + Solution.areMatricesEqual(result, new Solution2().matrixRankTransform(originalMatrix)));
+    }
+
+    public static int[][] parseMatrix(String input) {
+        // 去掉首尾空白与中括号
+        input = input.trim();
+        if (input.startsWith("[")) input = input.substring(1);
+        if (input.endsWith("]")) input = input.substring(0, input.length() - 1);
+
+        // 处理空数组
+        if (input.isEmpty()) return new int[0][0];
+
+        // 按子数组分割
+        List<int[]> rows = new ArrayList<>();
+        for (String rowStr : input.split("],")) {
+            rowStr = rowStr.replaceAll("\\[", "").replaceAll("]", "").trim();
+            if (rowStr.isEmpty()) {
+                rows.add(new int[0]);
+            } else {
+                String[] nums = rowStr.split(",");
+                int[] row = new int[nums.length];
+                for (int i = 0; i < nums.length; i++) {
+                    row[i] = Integer.parseInt(nums[i].trim());
+                }
+                rows.add(row);
+            }
+        }
+
+        return rows.toArray(new int[0][]);
     }
 }
 
@@ -63,22 +99,6 @@ class Solution {
         public int value;
         public int rankValue;
         public boolean canBeUsed = true;
-
-        public Pair(
-                int row,
-                int column){
-            this.row = row;
-            this.column = column;
-        }
-
-        public Pair(
-                int row,
-                int column,
-                int value){
-            this.row = row;
-            this.column = column;
-            this.value = value;
-        }
 
         public Pair(
                 int row,
