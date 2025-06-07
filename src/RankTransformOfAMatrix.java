@@ -1,6 +1,4 @@
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -65,10 +63,11 @@ public class RankTransformOfAMatrix {
         long start = System.nanoTime();
         var result = solution.matrixRankTransform(originalMatrix);
         long end = System.nanoTime();
-
+        System.out.println("Result:");
+        printFormattedMatrix(result);
 
         var standardAnswer = new Solution2().matrixRankTransform(originalMatrix);
-        System.out.println("Result:");
+        System.out.println("Standard Result:");
         printFormattedMatrix(standardAnswer);
 
         System.out.printf("【%s】耗时: %.3f ms%n", "printFormattedMatrix", (end - start) / 1_000_000.0);
@@ -166,13 +165,12 @@ class Solution {
         public boolean equals(Object obj) {
             return obj instanceof Pair
                     && this.row == ((Pair)obj).row
-                    && this.column == ((Pair)obj).column
-                    && this.rankValue == ((Pair)obj).rankValue;
+                    && this.column == ((Pair)obj).column;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(row, column, rankValue);
+            return Objects.hash(row, column);
         }
 
         @Override
@@ -182,7 +180,7 @@ class Solution {
     }
 
     public int[][] matrixRankTransform(int[][] matrix) {
-        var valueToPairsMap = new HashMap<Integer, ArrayList<Pair>>();
+        var valueToPairsMap = new HashMap<Integer, HashSet<Pair>>();
 
         var pairSet = new HashSet<Pair>();
 
@@ -193,8 +191,6 @@ class Solution {
 
         var rank = new int[rowCount][colCount];
         var pairs = new Pair[rowCount][colCount];
-
-//        long rowMapTimeStart = System.nanoTime();
 
         var rowMap = new HashMap<Integer, TreeMap<Integer, ArrayList<Pair>>>();
         var colMap = new HashMap<Integer, TreeMap<Integer, ArrayList<Pair>>>();
@@ -214,7 +210,7 @@ class Solution {
                 pairs[i][j] = pair;
                 rowTreeMap.get(value).add(pair);
 
-                valueToPairsMap.putIfAbsent(value, new ArrayList<>());
+                valueToPairsMap.putIfAbsent(value, new HashSet<Pair>());
                 valueToPairsMap.get(value).add(pair);
 
                 if (value < minimalRowValue) {
@@ -262,8 +258,38 @@ class Solution {
         intersectedPairs.retainAll(minimalColumnPairs);
 
         pairSet.addAll(intersectedPairs);
-//        long rowMapTimeEnd = System.nanoTime();
-//        System.out.printf("【%s】耗时: %.3f ms%n", "find 1", (rowMapTimeEnd - rowMapTimeStart) / 1_000_000.0);
+
+        // 构建连通图
+        var valueGraphMap = new HashMap<Integer, ArrayList<HashSet<Pair>>>();
+
+        for (Map.Entry<Integer, HashSet<Pair>> entry : valueToPairsMap.entrySet()) {
+            var regions = new ArrayList<HashSet<Pair>>();
+            valueGraphMap.put(entry.getKey(), regions);
+
+            for (var pair : entry.getValue()) {
+                var isFindRegion = false;
+
+                for (var region: regions){
+                    for (var otherPair: region){
+                        if(pair.row == otherPair.row || pair.column == otherPair.column){
+                            region.add(pair);
+                            break;
+                        }
+                    }
+
+                    if(isFindRegion){
+                        break;
+                    }
+                }
+                if(!isFindRegion){
+                    var newRegion = new HashSet<Pair>();
+                    newRegion.add(pair);
+                    regions.add(newRegion);
+                }
+            }
+        }
+
+        System.out.println("valueGraphMap: " + valueGraphMap);
 
         while (true){
             var isUsedChanged = false;
@@ -320,18 +346,14 @@ class Solution {
                 var higherRowKey = specificRowMap.higherKey(pair.value);
                 var higherRow = higherRowKey == null ? new ArrayList<Pair>() : specificRowMap.get(higherRowKey);
 
-                var sameRow = specificRowMap.get(pair.value);
-                var sameColumn = specificColMap.get(pair.value);
-
                 for (Pair currentPair : higherRow) {
                     var newRankValue = pair.rankValue + 1;
                     if(rank[currentPair.row][currentPair.column] < newRankValue) {
                         rank[currentPair.row][currentPair.column] = newRankValue;
-                        var pairX = pairs[currentPair.row][currentPair.column];
-                        pairX.rankValue = newRankValue;
-                        if (!pair.inUse) {
-                            pairSet.add(pairX);
-                            pairX.inUse = true;
+                        currentPair.rankValue = newRankValue;
+                        if (!currentPair.inUse) {
+                            pairSet.add(currentPair);
+                            currentPair.inUse = true;
                         }
                     }
                 }
@@ -340,14 +362,35 @@ class Solution {
                     var newRankValue = pair.rankValue + 1;
                     if(rank[currentPair.row][currentPair.column] < newRankValue) {
                         rank[currentPair.row][currentPair.column] = newRankValue;
-                        var pairX = pairs[currentPair.row][currentPair.column];
-                        pairX.rankValue = newRankValue;
-                        if (!pair.inUse) {
-                            pairSet.add(pairX);
-                            pairX.inUse = true;
+                        currentPair.rankValue = newRankValue;
+                        if (!currentPair.inUse) {
+                            pairSet.add(currentPair);
+                            currentPair.inUse = true;
                         }
                     }
                 }
+
+//                for (var currentSet : valueGraphMap.get(pair.value)){
+//                    if(currentSet.contains(pair)){
+//                        for (Pair currentPair : currentSet) {
+//                            var newRankValue = pair.rankValue;
+//                            if (newRankValue > rank[currentPair.row][currentPair.column]) {
+//                                rank[currentPair.row][currentPair.column] = newRankValue;
+//
+//                                var pairX = pairs[currentPair.row][currentPair.column];
+//                                pairX.rankValue = newRankValue;
+//                                if (!pairX.inUse) {
+//                                    pairSet.add(pairX);
+//                                    pairX.inUse = true;
+//                                }
+//                            }
+//                        }
+//                        break;
+//                    }
+//                }
+
+                var sameRow = specificRowMap.get(pair.value);
+                var sameColumn = specificColMap.get(pair.value);
 
                 for (Pair currentPair : sameRow) {
                     var newRankValue = pair.rankValue;
