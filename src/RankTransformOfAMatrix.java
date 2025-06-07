@@ -189,7 +189,6 @@ class Solution {
         int rowCount = matrix.length;
         int colCount = matrix[0].length;
 
-        var rank = new int[rowCount][colCount];
         var pairs = new Pair[rowCount][colCount];
 
         var rowMap = new HashMap<Integer, TreeMap<Integer, ArrayList<Pair>>>();
@@ -206,7 +205,7 @@ class Solution {
             for (int j = 0; j < colCount; j++) {
                 var value = matrix[i][j];
                 rowTreeMap.putIfAbsent(value, new ArrayList<>());
-                var pair = new Pair(i, j, value, 1);
+                var pair = new Pair(i, j, value, 0);
                 pairs[i][j] = pair;
                 rowTreeMap.get(value).add(pair);
 
@@ -259,38 +258,6 @@ class Solution {
 
         pairSet.addAll(intersectedPairs);
 
-        // 构建连通图
-        var valueGraphMap = new HashMap<Integer, ArrayList<HashSet<Pair>>>();
-
-        for (Map.Entry<Integer, HashSet<Pair>> entry : valueToPairsMap.entrySet()) {
-            var regions = new ArrayList<HashSet<Pair>>();
-            valueGraphMap.put(entry.getKey(), regions);
-
-            for (var pair : entry.getValue()) {
-                var isFindRegion = false;
-
-                for (var region: regions){
-                    for (var otherPair: region){
-                        if(pair.row == otherPair.row || pair.column == otherPair.column){
-                            region.add(pair);
-                            break;
-                        }
-                    }
-
-                    if(isFindRegion){
-                        break;
-                    }
-                }
-                if(!isFindRegion){
-                    var newRegion = new HashSet<Pair>();
-                    newRegion.add(pair);
-                    regions.add(newRegion);
-                }
-            }
-        }
-
-        System.out.println("valueGraphMap: " + valueGraphMap);
-
         while (true){
             var isUsedChanged = false;
             for (Pair pair : pairSet) {
@@ -319,7 +286,7 @@ class Solution {
                 }
 
                 if (pair.canBeUsed && !isUsedChanged) {
-                    rank[pair.row][pair.column] = pair.rankValue;
+                    pair.rankValue = 1;
                 }
             }
             pairSet.removeIf(pair -> !pair.canBeUsed);
@@ -328,6 +295,38 @@ class Solution {
                 break;
             }
         }
+
+//        // 构建连通图
+//        var valueGraphMap = new HashMap<Integer, ArrayList<HashSet<Pair>>>();
+//
+//        for (Map.Entry<Integer, HashSet<Pair>> entry : valueToPairsMap.entrySet()) {
+//            var regions = new ArrayList<HashSet<Pair>>();
+//            valueGraphMap.put(entry.getKey(), regions);
+//
+//            for (var pair : entry.getValue()) {
+//                var isFindRegion = false;
+//
+//                for (var region: regions){
+//                    for (var otherPair: region){
+//                        if(pair.row == otherPair.row || pair.column == otherPair.column){
+//                            region.add(pair);
+//                            break;
+//                        }
+//                    }
+//
+//                    if(isFindRegion){
+//                        break;
+//                    }
+//                }
+//                if(!isFindRegion){
+//                    var newRegion = new HashSet<Pair>();
+//                    newRegion.add(pair);
+//                    regions.add(newRegion);
+//                }
+//            }
+//        }
+//
+//        System.out.println("valueGraphMap: " + valueGraphMap);
 
         while (!pairSet.isEmpty()){
             System.out.println("Current round: " + roundTurn);
@@ -348,8 +347,7 @@ class Solution {
 
                 for (Pair currentPair : higherRow) {
                     var newRankValue = pair.rankValue + 1;
-                    if(rank[currentPair.row][currentPair.column] < newRankValue) {
-                        rank[currentPair.row][currentPair.column] = newRankValue;
+                    if(currentPair.rankValue < newRankValue) {
                         currentPair.rankValue = newRankValue;
                         if (!currentPair.inUse) {
                             pairSet.add(currentPair);
@@ -360,8 +358,7 @@ class Solution {
 
                 for (Pair currentPair : higherCol) {
                     var newRankValue = pair.rankValue + 1;
-                    if(rank[currentPair.row][currentPair.column] < newRankValue) {
-                        rank[currentPair.row][currentPair.column] = newRankValue;
+                    if(currentPair.rankValue < newRankValue) {
                         currentPair.rankValue = newRankValue;
                         if (!currentPair.inUse) {
                             pairSet.add(currentPair);
@@ -394,8 +391,8 @@ class Solution {
 
                 for (Pair currentPair : sameRow) {
                     var newRankValue = pair.rankValue;
-                    if (newRankValue > rank[currentPair.row][currentPair.column]) {
-                        rank[currentPair.row][currentPair.column] = newRankValue;
+                    if (newRankValue > currentPair.rankValue) {
+                        currentPair.rankValue = newRankValue;
 
                         var pairX = pairs[currentPair.row][currentPair.column];
                         pairX.rankValue = newRankValue;
@@ -408,8 +405,8 @@ class Solution {
 
                 for (Pair currentPair : sameColumn) {
                     var newRankValue = pair.rankValue;
-                    if (newRankValue > rank[currentPair.row][currentPair.column]) {
-                        rank[currentPair.row][currentPair.column] = newRankValue;
+                    if (newRankValue > currentPair.rankValue) {
+                        currentPair.rankValue = newRankValue;
 
                         var pairX = pairs[currentPair.row][currentPair.column];
                         pairX.rankValue = newRankValue;
@@ -427,6 +424,8 @@ class Solution {
         }
 
         System.out.println("Used round turn: " + roundTurn);
-        return rank;
+        return Arrays.stream(pairs)
+                .map(row -> Arrays.stream(row).mapToInt(p -> p.rankValue).toArray())
+                .toArray(int[][]::new);
     }
 }
