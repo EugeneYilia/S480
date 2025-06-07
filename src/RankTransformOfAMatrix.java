@@ -303,16 +303,14 @@ class Solution {
                 var sameValueCol = specificColMap.get(pair.value);
 
                 for (Pair currentPair : higherRow) {
-                    var rankValue = rank[currentPair.row][currentPair.column];
-                    if(rankValue < pair.rankValue + 1) {
+                    if(rank[currentPair.row][currentPair.column] < pair.rankValue + 1) {
                         rank[currentPair.row][currentPair.column] = pair.rankValue + 1;
                         pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
                     }
                 }
 
                 for (Pair currentPair : higherCol) {
-                    var rankValue = rank[currentPair.row][currentPair.column];
-                    if(rankValue < pair.rankValue + 1) {
+                    if(rank[currentPair.row][currentPair.column] < pair.rankValue + 1) {
                         rank[currentPair.row][currentPair.column] = pair.rankValue + 1;
                         pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
                     }
