@@ -177,12 +177,13 @@ class Solution {
     public int[][] matrixRankTransform(int[][] matrix) {
         var pairSet = new HashSet<Pair>();
 
-        var roundTurn = 2;
+//        var roundTurn = 2;
 
         int rowCount = matrix.length;
         int colCount = matrix[0].length;
 
         var rank = new int[rowCount][colCount];
+        var pairs = new Pair[rowCount][colCount];
 
 //        long rowMapTimeStart = System.nanoTime();
 
@@ -195,12 +196,14 @@ class Solution {
             rowMap.put(i, rowTreeMap);
 
             var minimalRowValue = Integer.MAX_VALUE;
-            var minimalRowIndex = new ArrayList<Integer>();
+            var minimalRowIndex = new HashSet<Integer>();
 
             for (int j = 0; j < colCount; j++) {
                 var value = matrix[i][j];
                 var list = rowTreeMap.getOrDefault(value, new ArrayList<>());
-                list.add(new Pair(i, j, value, 1));
+                var pair = new Pair(i, j, value, 1);
+                pairs[i][j] = pair;
+                list.add(pair);
                 rowTreeMap.put(value, list);
 
                 if (value < minimalRowValue) {
@@ -213,7 +216,7 @@ class Solution {
             }
 
             for (Integer index : minimalRowIndex) {
-                minimalRowPairs.add(new Pair(i, index, minimalRowValue, 1));
+                minimalRowPairs.add(pairs[i][index]);
             }
         }
 
@@ -222,13 +225,13 @@ class Solution {
             var colTreeMap = new TreeMap<Integer, ArrayList<Pair>>();
             colMap.put(i, colTreeMap);
 
-            var minimalColumnValue = 999;
-            var minimalColumnIndex = new ArrayList<Integer>();
+            var minimalColumnValue = Integer.MAX_VALUE;
+            var minimalColumnIndex = new HashSet<Integer>();
 
             for (int j = 0; j < rowCount; j++) {
                 var value = matrix[j][i];
                 var list = colTreeMap.getOrDefault(value, new ArrayList<>());
-                list.add(new Pair(j, i, value, 1));
+                list.add(pairs[j][i]);
                 colTreeMap.put(value, list);
 
                 if (value < minimalColumnValue) {
@@ -241,7 +244,7 @@ class Solution {
             }
 
             for (Integer index : minimalColumnIndex) {
-                minimalColumnPairs.add(new Pair(index, i, minimalColumnValue, 1));
+                minimalColumnPairs.add(pairs[index][i]);
             }
         }
 
@@ -305,38 +308,52 @@ class Solution {
                 var higherRow = higherRowKey == null ? new ArrayList<Pair>() : specificRowMap.get(higherRowKey);
 
                 for (Pair currentPair : higherRow) {
-                    if(rank[currentPair.row][currentPair.column] < pair.rankValue + 1) {
-                        rank[currentPair.row][currentPair.column] = pair.rankValue + 1;
-                        pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
+                    var newRankValue = pair.rankValue + 1;
+                    if(rank[currentPair.row][currentPair.column] < newRankValue) {
+                        rank[currentPair.row][currentPair.column] = newRankValue;
+                        var pairX = pairs[currentPair.row][currentPair.column];
+                        pairX.rankValue = newRankValue;
+                        pairSet.add(pairX);
                     }
                 }
 
                 for (Pair currentPair : higherCol) {
-                    if(rank[currentPair.row][currentPair.column] < pair.rankValue + 1) {
-                        rank[currentPair.row][currentPair.column] = pair.rankValue + 1;
-                        pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
+                    var newRankValue = pair.rankValue + 1;
+                    if(rank[currentPair.row][currentPair.column] < newRankValue) {
+                        rank[currentPair.row][currentPair.column] = newRankValue;
+                        var pairX = pairs[currentPair.row][currentPair.column];
+                        pairX.rankValue = newRankValue;
+                        pairSet.add(pairX);
                     }
                 }
 
                 for (Pair currentPair : specificRowMap.get(pair.value)) {
-                    if (pair.rankValue > rank[currentPair.row][currentPair.column]) {
-                        rank[currentPair.row][currentPair.column] = pair.rankValue;
-                        pairSet.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
+                    var newRankValue = pair.rankValue;
+                    if (newRankValue > rank[currentPair.row][currentPair.column]) {
+                        rank[currentPair.row][currentPair.column] = newRankValue;
+
+                        var pairX = pairs[currentPair.row][currentPair.column];
+                        pairX.rankValue = newRankValue;
+                        pairSet.add(pairX);
                     }
                 }
 
                 for (Pair currentPair : specificColMap.get(pair.value)) {
-                    if (pair.rankValue > rank[currentPair.row][currentPair.column]) {
-                        rank[currentPair.row][currentPair.column] = pair.rankValue;
-                        pairSet.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
+                    var newRankValue = pair.rankValue;
+                    if (newRankValue > rank[currentPair.row][currentPair.column]) {
+                        rank[currentPair.row][currentPair.column] = newRankValue;
+
+                        var pairX = pairs[currentPair.row][currentPair.column];
+                        pairX.rankValue = newRankValue;
+                        pairSet.add(pairX);
                     }
                 }
             });
 
-            roundTurn++;
+//            roundTurn++;
         }
 
-        System.out.println("Used round turn: " + roundTurn);
+//        System.out.println("Used round turn: " + roundTurn);
         return rank;
     }
 }
