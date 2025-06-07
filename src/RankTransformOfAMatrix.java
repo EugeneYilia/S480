@@ -62,8 +62,8 @@ public class RankTransformOfAMatrix {
         long end = System.nanoTime();
 
 
-        System.out.println("Result:");
-        printFormattedMatrix(result);
+//        System.out.println("Result:");
+//        printFormattedMatrix(result);
 
         System.out.printf("【%s】耗时: %.3f ms%n", "printFormattedMatrix", (end - start) / 1_000_000.0);
 
@@ -184,6 +184,8 @@ class Solution {
 
         var rank = new int[rowCount][colCount];
 
+//        long rowMapTimeStart = System.nanoTime();
+
         var rowMap = new HashMap<Integer, TreeMap<Integer, ArrayList<Pair>>>();
         var colMap = new HashMap<Integer, TreeMap<Integer, ArrayList<Pair>>>();
 
@@ -247,6 +249,8 @@ class Solution {
         intersectedPairs.retainAll(minimalColumnPairs);
 
         pairSet.addAll(intersectedPairs);
+//        long rowMapTimeEnd = System.nanoTime();
+//        System.out.printf("【%s】耗时: %.3f ms%n", "find 1", (rowMapTimeEnd - rowMapTimeStart) / 1_000_000.0);
 
         while (true){
             var isUsedChanged = false;
@@ -299,8 +303,6 @@ class Solution {
 
                 var higherRowKey = specificRowMap.higherKey(pair.value);
                 var higherRow = higherRowKey == null ? new ArrayList<Pair>() : specificRowMap.get(higherRowKey);
-                var sameValueRow = specificRowMap.get(pair.value);
-                var sameValueCol = specificColMap.get(pair.value);
 
                 for (Pair currentPair : higherRow) {
                     if(rank[currentPair.row][currentPair.column] < pair.rankValue + 1) {
@@ -316,14 +318,14 @@ class Solution {
                     }
                 }
 
-                for (Pair currentPair : sameValueRow) {
+                for (Pair currentPair : specificRowMap.get(pair.value)) {
                     if (pair.rankValue > rank[currentPair.row][currentPair.column]) {
                         rank[currentPair.row][currentPair.column] = pair.rankValue;
                         pairSet.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
                     }
                 }
 
-                for (Pair currentPair : sameValueCol) {
+                for (Pair currentPair : specificColMap.get(pair.value)) {
                     if (pair.rankValue > rank[currentPair.row][currentPair.column]) {
                         rank[currentPair.row][currentPair.column] = pair.rankValue;
                         pairSet.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
