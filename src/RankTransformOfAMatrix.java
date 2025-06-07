@@ -62,15 +62,16 @@ public class RankTransformOfAMatrix {
         );
 
         System.out.println("Row count: " + originalMatrix.length + "  Column count: " + originalMatrix[0].length);
-        long start = System.nanoTime();
-        var result = solution.matrixRankTransform(originalMatrix);
-        long end = System.nanoTime();
+//        long start = System.nanoTime();
+//        var result = solution.matrixRankTransform(originalMatrix);
+//        long end = System.nanoTime();
 
 
-//        System.out.println("Result:");
-//        printFormattedMatrix(result);
+        var standardAnswer = new Solution2().matrixRankTransform(originalMatrix);
+        System.out.println("Result:");
+        printFormattedMatrix(standardAnswer);
 
-        System.out.printf("【%s】耗时: %.3f ms%n", "printFormattedMatrix", (end - start) / 1_000_000.0);
+//        System.out.printf("【%s】耗时: %.3f ms%n", "printFormattedMatrix", (end - start) / 1_000_000.0);
 
 //        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("matrix.ser"))) {
 //            oos.writeObject(result);
@@ -78,7 +79,7 @@ public class RankTransformOfAMatrix {
 //            throw new RuntimeException(e);
 //        }
 
-        System.out.println("Answer is right: " + areMatricesEqual(result, new Solution2().matrixRankTransform(originalMatrix)));
+//        System.out.println("Answer is right: " + areMatricesEqual(result, standardAnswer));
     }
 
     public static int[][] parseMatrix(String input) {
@@ -148,6 +149,7 @@ class Solution {
         public int value;
         public int rankValue;
         public boolean canBeUsed = true;
+        public boolean inUse = false;
 
         public Pair(
                 int row,
@@ -305,6 +307,7 @@ class Solution {
             pairSet.clear();
             System.out.println("currentPairList size " + currentPairList.size());
             currentPairList.forEach(pair -> {
+                pair.inUse = false;
                 var specificRowMap = rowMap.get(pair.row);
                 var specificColMap = colMap.get(pair.column);
 
@@ -324,7 +327,10 @@ class Solution {
                         rank[currentPair.row][currentPair.column] = newRankValue;
                         var pairX = pairs[currentPair.row][currentPair.column];
                         pairX.rankValue = newRankValue;
-                        pairSet.add(pairX);
+                        if (!pair.inUse) {
+                            pairSet.add(pairX);
+                            pairX.inUse = true;
+                        }
                     }
                 }
 
@@ -335,7 +341,10 @@ class Solution {
                         rank[currentPair.row][currentPair.column] = newRankValue;
                         var pairX = pairs[currentPair.row][currentPair.column];
                         pairX.rankValue = newRankValue;
-                        pairSet.add(pairX);
+                        if (!pair.inUse) {
+                            pairSet.add(pairX);
+                            pairX.inUse = true;
+                        }
                     }
                 }
 
@@ -347,7 +356,10 @@ class Solution {
 
                         var pairX = pairs[currentPair.row][currentPair.column];
                         pairX.rankValue = newRankValue;
-                        pairSet.add(pairX);
+                        if (!pair.inUse) {
+                            pairSet.add(pairX);
+                            pairX.inUse = true;
+                        }
                     }
                 }
 
@@ -359,7 +371,10 @@ class Solution {
 
                         var pairX = pairs[currentPair.row][currentPair.column];
                         pairX.rankValue = newRankValue;
-                        pairSet.add(pairX);
+                        if (!pair.inUse) {
+                            pairSet.add(pairX);
+                            pairX.inUse = true;
+                        }
                     }
                 }
             });
