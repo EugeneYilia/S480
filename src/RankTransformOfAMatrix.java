@@ -51,13 +51,13 @@ public class RankTransformOfAMatrix {
 //        };
 
 
-        var originalMatrix = parseMatrix(
-                Files.readString(Path.of("data"))
-        );
-
 //        var originalMatrix = parseMatrix(
-//                Files.readString(Path.of("data2"))
+//                Files.readString(Path.of("data"))
 //        );
+
+        var originalMatrix = parseMatrix(
+                Files.readString(Path.of("data2"))
+        );
 
         System.out.println("Row count: " + originalMatrix.length + "  Column count: " + originalMatrix[0].length);
         long start = System.nanoTime();
@@ -296,36 +296,49 @@ class Solution {
             }
         }
 
-//        // 构建连通图
-//        var valueGraphMap = new HashMap<Integer, ArrayList<HashSet<Pair>>>();
-//
-//        for (Map.Entry<Integer, HashSet<Pair>> entry : valueToPairsMap.entrySet()) {
-//            var regions = new ArrayList<HashSet<Pair>>();
-//            valueGraphMap.put(entry.getKey(), regions);
-//
-//            for (var pair : entry.getValue()) {
-//                var isFindRegion = false;
-//
-//                for (var region: regions){
-//                    for (var otherPair: region){
-//                        if(pair.row == otherPair.row || pair.column == otherPair.column){
-//                            region.add(pair);
-//                            break;
-//                        }
-//                    }
-//
-//                    if(isFindRegion){
-//                        break;
-//                    }
-//                }
-//                if(!isFindRegion){
-//                    var newRegion = new HashSet<Pair>();
-//                    newRegion.add(pair);
-//                    regions.add(newRegion);
-//                }
-//            }
-//        }
-//
+        // 构建连通图
+        var valueGraphMap = new HashMap<Integer, ArrayList<HashSet<Pair>>>();
+
+        for (Map.Entry<Integer, HashSet<Pair>> entry : valueToPairsMap.entrySet()) {
+            var regions = new ArrayList<HashSet<Pair>>();
+
+            for (var pair : entry.getValue()) {
+                var isFindRegion = false;
+
+                for (var region: regions){
+                    var canAddCurrentRegion = false;
+                    for (var otherPair: region){
+                        if(pair.row == otherPair.row || pair.column == otherPair.column){
+                            isFindRegion = true;
+                            canAddCurrentRegion = true;
+                            break;
+                        }
+                    }
+
+                    if(canAddCurrentRegion){
+                        region.add(pair);
+                    }
+                }
+
+                if(!isFindRegion){
+                    var newRegion = new HashSet<Pair>();
+                    newRegion.add(pair);
+                    regions.add(newRegion);
+                }
+            }
+
+            var finalRegions = new ArrayList<HashSet<Pair>>();
+            for (var region: regions){
+                for (var otherRegion: regions){
+                    if(!Collections.disjoint(region, otherRegion)){
+                        region.addAll(otherRegion);
+                        finalRegions.add(region);
+                    }
+                }
+            }
+            valueGraphMap.put(entry.getKey(), finalRegions);
+        }
+
 //        System.out.println("valueGraphMap: " + valueGraphMap);
 
         while (!pairSet.isEmpty()){
@@ -367,55 +380,53 @@ class Solution {
                     }
                 }
 
-//                for (var currentSet : valueGraphMap.get(pair.value)){
-//                    if(currentSet.contains(pair)){
-//                        for (Pair currentPair : currentSet) {
-//                            var newRankValue = pair.rankValue;
-//                            if (newRankValue > rank[currentPair.row][currentPair.column]) {
-//                                rank[currentPair.row][currentPair.column] = newRankValue;
+                for (var currentSet : valueGraphMap.get(pair.value)){
+                    if(currentSet.contains(pair)){
+                        for (Pair currentPair : currentSet) {
+                            var newRankValue = pair.rankValue;
+                            if (newRankValue > currentPair.rankValue) {
+                                currentPair.rankValue = newRankValue;
+
+                                if (!currentPair.inUse) {
+                                    pairSet.add(currentPair);
+                                    currentPair.inUse = true;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+
+//                var sameRow = specificRowMap.get(pair.value);
+//                var sameColumn = specificColMap.get(pair.value);
 //
-//                                var pairX = pairs[currentPair.row][currentPair.column];
-//                                pairX.rankValue = newRankValue;
-//                                if (!pairX.inUse) {
-//                                    pairSet.add(pairX);
-//                                    pairX.inUse = true;
-//                                }
-//                            }
+//                for (Pair currentPair : sameRow) {
+//                    var newRankValue = pair.rankValue;
+//                    if (newRankValue > currentPair.rankValue) {
+//                        currentPair.rankValue = newRankValue;
+//
+//                        var pairX = pairs[currentPair.row][currentPair.column];
+//                        pairX.rankValue = newRankValue;
+//                        if (!pair.inUse) {
+//                            pairSet.add(pairX);
+//                            pairX.inUse = true;
 //                        }
-//                        break;
 //                    }
 //                }
-
-                var sameRow = specificRowMap.get(pair.value);
-                var sameColumn = specificColMap.get(pair.value);
-
-                for (Pair currentPair : sameRow) {
-                    var newRankValue = pair.rankValue;
-                    if (newRankValue > currentPair.rankValue) {
-                        currentPair.rankValue = newRankValue;
-
-                        var pairX = pairs[currentPair.row][currentPair.column];
-                        pairX.rankValue = newRankValue;
-                        if (!pair.inUse) {
-                            pairSet.add(pairX);
-                            pairX.inUse = true;
-                        }
-                    }
-                }
-
-                for (Pair currentPair : sameColumn) {
-                    var newRankValue = pair.rankValue;
-                    if (newRankValue > currentPair.rankValue) {
-                        currentPair.rankValue = newRankValue;
-
-                        var pairX = pairs[currentPair.row][currentPair.column];
-                        pairX.rankValue = newRankValue;
-                        if (!pair.inUse) {
-                            pairSet.add(pairX);
-                            pairX.inUse = true;
-                        }
-                    }
-                }
+//
+//                for (Pair currentPair : sameColumn) {
+//                    var newRankValue = pair.rankValue;
+//                    if (newRankValue > currentPair.rankValue) {
+//                        currentPair.rankValue = newRankValue;
+//
+//                        var pairX = pairs[currentPair.row][currentPair.column];
+//                        pairX.rankValue = newRankValue;
+//                        if (!pair.inUse) {
+//                            pairSet.add(pairX);
+//                            pairX.inUse = true;
+//                        }
+//                    }
+//                }
             });
 
             roundTurn++;
