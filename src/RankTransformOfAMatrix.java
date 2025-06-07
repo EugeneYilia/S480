@@ -333,6 +333,8 @@ class Solution {
 
             roundTurn++;
         }
+
+        System.out.println("Used round turn: " + roundTurn);
         return rank;
     }
 }
