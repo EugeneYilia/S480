@@ -53,25 +53,25 @@ public class RankTransformOfAMatrix {
 //        };
 
 
-//        var originalMatrix = parseMatrix(
-//                Files.readString(Path.of("data"))
-//        );
-
         var originalMatrix = parseMatrix(
-                Files.readString(Path.of("data2"))
+                Files.readString(Path.of("data"))
         );
 
+//        var originalMatrix = parseMatrix(
+//                Files.readString(Path.of("data2"))
+//        );
+
         System.out.println("Row count: " + originalMatrix.length + "  Column count: " + originalMatrix[0].length);
-//        long start = System.nanoTime();
-//        var result = solution.matrixRankTransform(originalMatrix);
-//        long end = System.nanoTime();
+        long start = System.nanoTime();
+        var result = solution.matrixRankTransform(originalMatrix);
+        long end = System.nanoTime();
 
 
         var standardAnswer = new Solution2().matrixRankTransform(originalMatrix);
         System.out.println("Result:");
         printFormattedMatrix(standardAnswer);
 
-//        System.out.printf("【%s】耗时: %.3f ms%n", "printFormattedMatrix", (end - start) / 1_000_000.0);
+        System.out.printf("【%s】耗时: %.3f ms%n", "printFormattedMatrix", (end - start) / 1_000_000.0);
 
 //        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("matrix.ser"))) {
 //            oos.writeObject(result);
@@ -79,7 +79,7 @@ public class RankTransformOfAMatrix {
 //            throw new RuntimeException(e);
 //        }
 
-//        System.out.println("Answer is right: " + areMatricesEqual(result, standardAnswer));
+        System.out.println("Answer is right: " + areMatricesEqual(result, standardAnswer));
     }
 
     public static int[][] parseMatrix(String input) {
@@ -182,6 +182,8 @@ class Solution {
     }
 
     public int[][] matrixRankTransform(int[][] matrix) {
+        var valueToPairsMap = new HashMap<Integer, ArrayList<Pair>>();
+
         var pairSet = new HashSet<Pair>();
 
         var roundTurn = 2;
@@ -207,11 +209,13 @@ class Solution {
 
             for (int j = 0; j < colCount; j++) {
                 var value = matrix[i][j];
-                var list = rowTreeMap.getOrDefault(value, new ArrayList<>());
+                rowTreeMap.putIfAbsent(value, new ArrayList<>());
                 var pair = new Pair(i, j, value, 1);
                 pairs[i][j] = pair;
-                list.add(pair);
-                rowTreeMap.put(value, list);
+                rowTreeMap.get(value).add(pair);
+
+                valueToPairsMap.putIfAbsent(value, new ArrayList<>());
+                valueToPairsMap.get(value).add(pair);
 
                 if (value < minimalRowValue) {
                     minimalRowIndex.clear();
@@ -237,9 +241,8 @@ class Solution {
 
             for (int j = 0; j < rowCount; j++) {
                 var value = matrix[j][i];
-                var list = colTreeMap.getOrDefault(value, new ArrayList<>());
-                list.add(pairs[j][i]);
-                colTreeMap.put(value, list);
+                colTreeMap.putIfAbsent(value, new ArrayList<>());
+                colTreeMap.get(value).add(pairs[j][i]);
 
                 if (value < minimalColumnValue) {
                     minimalColumnIndex.clear();
