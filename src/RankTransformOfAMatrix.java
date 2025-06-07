@@ -320,7 +320,6 @@ class Solution {
                 var sameRow = specificRowMap.get(pair.value);
                 var sameColumn = specificColMap.get(pair.value);
 
-//                System.out.println("higherRow count: " + higherRow.size());
                 for (Pair currentPair : higherRow) {
                     var newRankValue = pair.rankValue + 1;
                     if(rank[currentPair.row][currentPair.column] < newRankValue) {
@@ -334,7 +333,6 @@ class Solution {
                     }
                 }
 
-//                System.out.println("higherCol count: " + higherCol.size());
                 for (Pair currentPair : higherCol) {
                     var newRankValue = pair.rankValue + 1;
                     if(rank[currentPair.row][currentPair.column] < newRankValue) {
@@ -348,7 +346,6 @@ class Solution {
                     }
                 }
 
-//                System.out.println("sameRow count: " + sameRow.size());
                 for (Pair currentPair : sameRow) {
                     var newRankValue = pair.rankValue;
                     if (newRankValue > rank[currentPair.row][currentPair.column]) {
@@ -363,7 +360,6 @@ class Solution {
                     }
                 }
 
-//                System.out.println("sameColumn count: " + sameColumn.size());
                 for (Pair currentPair : sameColumn) {
                     var newRankValue = pair.rankValue;
                     if (newRankValue > rank[currentPair.row][currentPair.column]) {
