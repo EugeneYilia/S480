@@ -307,8 +307,6 @@ class Solution {
                     if(rankValue < pair.rankValue + 1) {
                         rank[currentPair.row][currentPair.column] = pair.rankValue + 1;
                         pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
-                    } else {
-                        pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, rankValue));
                     }
                 }
 
@@ -317,8 +315,6 @@ class Solution {
                     if(rankValue < pair.rankValue + 1) {
                         rank[currentPair.row][currentPair.column] = pair.rankValue + 1;
                         pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
-                    } else {
-                        pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, rankValue));
                     }
                 }
 
