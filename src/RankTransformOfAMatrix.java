@@ -1,4 +1,6 @@
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -57,9 +59,15 @@ public class RankTransformOfAMatrix {
         var result = solution.matrixRankTransform(originalMatrix);
 
         System.out.println("Result:");
-        Solution.printFormattedMatrix(result);
+        printFormattedMatrix(result);
 
-        System.out.println("Answer is right: " + Solution.areMatricesEqual(result, new Solution2().matrixRankTransform(originalMatrix)));
+//        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("matrix.ser"))) {
+//            oos.writeObject(result);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+
+        System.out.println("Answer is right: " + areMatricesEqual(result, new Solution2().matrixRankTransform(originalMatrix)));
     }
 
     public static int[][] parseMatrix(String input) {
@@ -88,6 +96,36 @@ public class RankTransformOfAMatrix {
         }
 
         return rows.toArray(new int[0][]);
+    }
+
+    public static void printFormattedMatrix(int[][] matrix) {
+        for (int[] row : matrix) {
+            for (int val : row) {
+                System.out.printf("%4d", val); // 宽度为4，右对齐
+            }
+            System.out.println();
+        }
+    }
+
+    public static boolean areMatricesEqual(int[][] matrix1, int[][] matrix2) {
+        // 检查是否为 null
+        if (matrix1 == null || matrix2 == null) return false;
+
+        // 检查行数是否相同
+        if (matrix1.length != matrix2.length) return false;
+
+        for (int i = 0; i < matrix1.length; i++) {
+            // 检查列数是否相同
+            if (matrix1[i].length != matrix2[i].length) return false;
+
+            for (int j = 0; j < matrix1[i].length; j++) {
+                if (matrix1[i][j] != matrix2[i][j]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
 
@@ -131,9 +169,6 @@ class Solution {
     }
 
     public int[][] matrixRankTransform(int[][] matrix) {
-//        System.out.println("Original Matrix");
-//        printFormattedMatrix(matrix);
-
         var pairSet = new HashSet<Pair>();
 
         var roundTurn = 2;
@@ -213,8 +248,8 @@ class Solution {
                 var currentValue = pair.value;
                 var specificRowMap = rowMap.get(pair.row);
                 var specificColMap = colMap.get(pair.column);
-                var sameValueRow = specificRowMap.getOrDefault(currentValue, new ArrayList<>());
-                var sameValueCol = specificColMap.getOrDefault(currentValue, new ArrayList<>());
+                var sameValueRow = specificRowMap.get(currentValue);
+                var sameValueCol = specificColMap.get(currentValue);
 
                 for (Pair p : sameValueRow) {
                     if (!pairSet.contains(p)) {
@@ -246,7 +281,6 @@ class Solution {
         }
 
         while (!pairSet.isEmpty()){
-//            System.out.println("start round " + roundTurn);
             var currentPairList = new HashSet<>(pairSet);
             pairSet.clear();
 
@@ -255,12 +289,12 @@ class Solution {
                 var specificColMap = colMap.get(pair.column);
 
                 var higherColKey = specificColMap.higherKey(pair.value);
-                var higherCol = higherColKey == null ? new ArrayList<Pair>() : specificColMap.getOrDefault(higherColKey, new ArrayList<Pair>());
+                var higherCol = higherColKey == null ? new ArrayList<Pair>() : specificColMap.get(higherColKey);
 
                 var higherRowKey = specificRowMap.higherKey(pair.value);
-                var higherRow = higherRowKey == null ? new ArrayList<Pair>() : specificRowMap.getOrDefault(higherRowKey, new ArrayList<Pair>());
-                var sameValueRow = specificRowMap.getOrDefault(pair.value, new ArrayList<>());
-                var sameValueCol = specificColMap.getOrDefault(pair.value, new ArrayList<>());
+                var higherRow = higherRowKey == null ? new ArrayList<Pair>() : specificRowMap.get(higherRowKey);
+                var sameValueRow = specificRowMap.get(pair.value);
+                var sameValueCol = specificColMap.get(pair.value);
 
                 for (Pair currentPair : higherRow) {
                     pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
@@ -292,47 +326,7 @@ class Solution {
             }
 
             roundTurn++;
-
-//            System.out.println("Original:");
-//            printFormattedMatrix(matrix);
-//            System.out.println();
-
-//            System.out.println("Rank:");
-//            printFormattedMatrix(rank);
-//            System.out.println();
         }
-        System.out.println("Used round turn: " + roundTurn);
-
         return rank;
-    }
-
-    public static void printFormattedMatrix(int[][] matrix) {
-        for (int[] row : matrix) {
-            for (int val : row) {
-                System.out.printf("%4d", val); // 宽度为4，右对齐
-            }
-            System.out.println();
-        }
-    }
-
-    public static boolean areMatricesEqual(int[][] matrix1, int[][] matrix2) {
-        // 检查是否为 null
-        if (matrix1 == null || matrix2 == null) return false;
-
-        // 检查行数是否相同
-        if (matrix1.length != matrix2.length) return false;
-
-        for (int i = 0; i < matrix1.length; i++) {
-            // 检查列数是否相同
-            if (matrix1[i].length != matrix2[i].length) return false;
-
-            for (int j = 0; j < matrix1[i].length; j++) {
-                if (matrix1[i][j] != matrix2[i][j]) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 }
