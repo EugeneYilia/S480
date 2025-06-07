@@ -187,35 +187,43 @@ class Solution {
 
         pairSet.addAll(intersectedPairs);
 
-        for (Pair pair : pairSet) {
-            var currentValue = pair.value;
-            var specificRowMap = rowMap.get(pair.row);
-            var specificColMap = colMap.get(pair.column);
-            var sameValueRow = specificRowMap.getOrDefault(currentValue, new ArrayList<>());
-            var sameValueCol = specificColMap.getOrDefault(currentValue, new ArrayList<>());
+        while (true){
+            var isUsedChanged = false;
+            for (Pair pair : pairSet) {
+                var currentValue = pair.value;
+                var specificRowMap = rowMap.get(pair.row);
+                var specificColMap = colMap.get(pair.column);
+                var sameValueRow = specificRowMap.getOrDefault(currentValue, new ArrayList<>());
+                var sameValueCol = specificColMap.getOrDefault(currentValue, new ArrayList<>());
 
-            for (Pair p: sameValueRow){
-                if(!pairSet.contains(p)){
-                    pair.canBeUsed = false;
-                    break;
-                }
-            }
-
-            if(pair.canBeUsed) {
-                for (Pair p : sameValueCol) {
+                for (Pair p : sameValueRow) {
                     if (!pairSet.contains(p)) {
                         pair.canBeUsed = false;
+                        isUsedChanged = true;
                         break;
                     }
                 }
-            }
 
-            if (pair.canBeUsed){
-                rank[pair.row][pair.column] = pair.rankValue;
+                if (pair.canBeUsed) {
+                    for (Pair p : sameValueCol) {
+                        if (!pairSet.contains(p)) {
+                            pair.canBeUsed = false;
+                            isUsedChanged = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (pair.canBeUsed && !isUsedChanged) {
+                    rank[pair.row][pair.column] = pair.rankValue;
+                }
+            }
+            pairSet.removeIf(pair -> !pair.canBeUsed);
+
+            if(!isUsedChanged){
+                break;
             }
         }
-
-        pairSet.removeIf(pair -> !pair.canBeUsed);
 
         while (!pairSet.isEmpty()){
 //            System.out.println("start round " + roundTurn);
