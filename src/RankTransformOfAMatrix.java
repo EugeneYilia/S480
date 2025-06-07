@@ -56,10 +56,16 @@ public class RankTransformOfAMatrix {
         var originalMatrix = parseMatrix(
                 Files.readString(Path.of("data"))
         );
+
+        long start = System.nanoTime();
         var result = solution.matrixRankTransform(originalMatrix);
+        long end = System.nanoTime();
+
 
         System.out.println("Result:");
         printFormattedMatrix(result);
+
+        System.out.printf("【%s】耗时: %.3f ms%n", "printFormattedMatrix", (end - start) / 1_000_000.0);
 
 //        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("matrix.ser"))) {
 //            oos.writeObject(result);
