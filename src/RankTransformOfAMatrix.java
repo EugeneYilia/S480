@@ -93,12 +93,15 @@ class Solution {
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof Pair && this.row == ((Pair)obj).row && this.column == ((Pair)obj).column;
+            return obj instanceof Pair
+                    && this.row == ((Pair)obj).row
+                    && this.column == ((Pair)obj).column
+                    && this.rankValue == ((Pair)obj).rankValue;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(row, column);
+            return Objects.hash(row, column, rankValue);
         }
 
         @Override
@@ -111,7 +114,7 @@ class Solution {
 //        System.out.println("Original Matrix");
 //        printFormattedMatrix(matrix);
 
-        var pairSet = new ArrayList<Pair>();
+        var pairSet = new HashSet<Pair>();
 
         var roundTurn = 2;
 
@@ -134,7 +137,7 @@ class Solution {
             for (int j = 0; j < colCount; j++) {
                 var value = matrix[i][j];
                 var list = rowTreeMap.getOrDefault(value, new ArrayList<>());
-                list.add(new Pair(i, j, value));
+                list.add(new Pair(i, j, value, 1));
                 rowTreeMap.put(value, list);
 
                 if (value < minimalRowValue) {
@@ -162,7 +165,7 @@ class Solution {
             for (int j = 0; j < rowCount; j++) {
                 var value = matrix[j][i];
                 var list = colTreeMap.getOrDefault(value, new ArrayList<>());
-                list.add(new Pair(j, i, value));
+                list.add(new Pair(j, i, value, 1));
                 colTreeMap.put(value, list);
 
                 if (value < minimalColumnValue) {
@@ -216,9 +219,8 @@ class Solution {
 
         while (!pairSet.isEmpty()){
 //            System.out.println("start round " + roundTurn);
-            var currentPairList = new ArrayList<>(pairSet);
+            var currentPairList = new HashSet<>(pairSet);
             pairSet.clear();
-            var refPairList = pairSet;
 
             currentPairList.forEach(pair -> {
                 var specificRowMap = rowMap.get(pair.row);
@@ -233,22 +235,22 @@ class Solution {
                 var sameValueCol = specificColMap.getOrDefault(pair.value, new ArrayList<>());
 
                 for (Pair currentPair : higherRow) {
-                    refPairList.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
+                    pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
                 }
 
                 for (Pair currentPair : higherCol) {
-                    refPairList.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
+                    pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
                 }
 
                 for (Pair currentPair : sameValueRow) {
                     if (pair.rankValue > rank[currentPair.row][currentPair.column]) {
-                        refPairList.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
+                        pairSet.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
                     }
                 }
 
                 for (Pair currentPair : sameValueCol) {
                     if (pair.rankValue > rank[currentPair.row][currentPair.column]) {
-                        refPairList.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
+                        pairSet.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
                     }
                 }
             });
