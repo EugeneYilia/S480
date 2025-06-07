@@ -53,10 +53,15 @@ public class RankTransformOfAMatrix {
 //        };
 
 
+//        var originalMatrix = parseMatrix(
+//                Files.readString(Path.of("data"))
+//        );
+
         var originalMatrix = parseMatrix(
-                Files.readString(Path.of("data"))
+                Files.readString(Path.of("data2"))
         );
 
+        System.out.println("Row count: " + originalMatrix.length + "  Column count: " + originalMatrix[0].length);
         long start = System.nanoTime();
         var result = solution.matrixRankTransform(originalMatrix);
         long end = System.nanoTime();
@@ -177,7 +182,7 @@ class Solution {
     public int[][] matrixRankTransform(int[][] matrix) {
         var pairSet = new HashSet<Pair>();
 
-//        var roundTurn = 2;
+        var roundTurn = 2;
 
         int rowCount = matrix.length;
         int colCount = matrix[0].length;
@@ -294,9 +299,11 @@ class Solution {
         }
 
         while (!pairSet.isEmpty()){
+            System.out.println("Current round: " + roundTurn);
+            long roundTimeStart = System.nanoTime();
             var currentPairList = new HashSet<>(pairSet);
             pairSet.clear();
-
+            System.out.println("currentPairList size " + currentPairList.size());
             currentPairList.forEach(pair -> {
                 var specificRowMap = rowMap.get(pair.row);
                 var specificColMap = colMap.get(pair.column);
@@ -307,6 +314,10 @@ class Solution {
                 var higherRowKey = specificRowMap.higherKey(pair.value);
                 var higherRow = higherRowKey == null ? new ArrayList<Pair>() : specificRowMap.get(higherRowKey);
 
+                var sameRow = specificRowMap.get(pair.value);
+                var sameColumn = specificColMap.get(pair.value);
+
+//                System.out.println("higherRow count: " + higherRow.size());
                 for (Pair currentPair : higherRow) {
                     var newRankValue = pair.rankValue + 1;
                     if(rank[currentPair.row][currentPair.column] < newRankValue) {
@@ -317,6 +328,7 @@ class Solution {
                     }
                 }
 
+//                System.out.println("higherCol count: " + higherCol.size());
                 for (Pair currentPair : higherCol) {
                     var newRankValue = pair.rankValue + 1;
                     if(rank[currentPair.row][currentPair.column] < newRankValue) {
@@ -327,7 +339,8 @@ class Solution {
                     }
                 }
 
-                for (Pair currentPair : specificRowMap.get(pair.value)) {
+//                System.out.println("sameRow count: " + sameRow.size());
+                for (Pair currentPair : sameRow) {
                     var newRankValue = pair.rankValue;
                     if (newRankValue > rank[currentPair.row][currentPair.column]) {
                         rank[currentPair.row][currentPair.column] = newRankValue;
@@ -338,7 +351,8 @@ class Solution {
                     }
                 }
 
-                for (Pair currentPair : specificColMap.get(pair.value)) {
+//                System.out.println("sameColumn count: " + sameColumn.size());
+                for (Pair currentPair : sameColumn) {
                     var newRankValue = pair.rankValue;
                     if (newRankValue > rank[currentPair.row][currentPair.column]) {
                         rank[currentPair.row][currentPair.column] = newRankValue;
@@ -350,10 +364,12 @@ class Solution {
                 }
             });
 
-//            roundTurn++;
+            roundTurn++;
+            long roundTimeEnd = System.nanoTime();
+            System.out.printf("【%s】耗时: %.3f ms%n", "CalcRank", (roundTimeEnd - roundTimeStart) / 1_000_000.0);
         }
 
-//        System.out.println("Used round turn: " + roundTurn);
+        System.out.println("Used round turn: " + roundTurn);
         return rank;
     }
 }
