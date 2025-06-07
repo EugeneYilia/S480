@@ -303,33 +303,39 @@ class Solution {
                 var sameValueCol = specificColMap.get(pair.value);
 
                 for (Pair currentPair : higherRow) {
-                    pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
+                    var rankValue = rank[currentPair.row][currentPair.column];
+                    if(rankValue < pair.rankValue + 1) {
+                        rank[currentPair.row][currentPair.column] = pair.rankValue + 1;
+                        pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
+                    } else {
+                        pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, rankValue));
+                    }
                 }
 
                 for (Pair currentPair : higherCol) {
-                    pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
+                    var rankValue = rank[currentPair.row][currentPair.column];
+                    if(rankValue < pair.rankValue + 1) {
+                        rank[currentPair.row][currentPair.column] = pair.rankValue + 1;
+                        pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, pair.rankValue + 1));
+                    } else {
+                        pairSet.add(new Pair(currentPair.row, currentPair.column, currentPair.value, rankValue));
+                    }
                 }
 
                 for (Pair currentPair : sameValueRow) {
                     if (pair.rankValue > rank[currentPair.row][currentPair.column]) {
+                        rank[currentPair.row][currentPair.column] = pair.rankValue;
                         pairSet.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
                     }
                 }
 
                 for (Pair currentPair : sameValueCol) {
                     if (pair.rankValue > rank[currentPair.row][currentPair.column]) {
+                        rank[currentPair.row][currentPair.column] = pair.rankValue;
                         pairSet.add(new Pair(currentPair.row, currentPair.column, pair.value, pair.rankValue));
                     }
                 }
             });
-
-            for (Pair currentPair : pairSet) {
-                if(rank[currentPair.row][currentPair.column] < currentPair.rankValue) {
-                    rank[currentPair.row][currentPair.column] = currentPair.rankValue;
-                } else {
-                    currentPair.rankValue = rank[currentPair.row][currentPair.column];
-                }
-            }
 
             roundTurn++;
         }
