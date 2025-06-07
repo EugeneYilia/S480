@@ -194,7 +194,7 @@ class Solution {
             var rowTreeMap = new TreeMap<Integer, ArrayList<Pair>>();
             rowMap.put(i, rowTreeMap);
 
-            var minimalRowValue = 999;
+            var minimalRowValue = Integer.MAX_VALUE;
             var minimalRowIndex = new ArrayList<Integer>();
 
             for (int j = 0; j < colCount; j++) {
