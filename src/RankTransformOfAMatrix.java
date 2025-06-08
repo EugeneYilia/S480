@@ -209,8 +209,6 @@ class Solution {
         var rowMap = new HashMap<Integer, TreeMap<Integer, HashSet<Pair>>>();
         var colMap = new HashMap<Integer, TreeMap<Integer, HashSet<Pair>>>();
 
-
-
         for (int i = 0; i < rowCount; i++) {
             rowMap.put(i, new TreeMap<Integer, HashSet<Pair>>());
 
