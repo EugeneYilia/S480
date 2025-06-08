@@ -69,20 +69,24 @@ public class RankTransformOfAMatrix {
 //                Files.readString(Path.of("data"))
 //        );
 
+//        var originalMatrix = parseMatrix(
+//                Files.readString(Path.of("data2"))
+//        );
+
         var originalMatrix = parseMatrix(
-                Files.readString(Path.of("data2"))
+                Files.readString(Path.of("data3"))
         );
 
         System.out.println("Row count: " + originalMatrix.length + "  Column count: " + originalMatrix[0].length);
         long start = System.nanoTime();
         var result = solution.matrixRankTransform(originalMatrix);
         long end = System.nanoTime();
-        System.out.println("Result:");
-        printFormattedMatrix(result);
+//        System.out.println("Result:");
+//        printFormattedMatrix(result);
 
         var standardAnswer = new Solution2().matrixRankTransform(originalMatrix);
-        System.out.println("Standard Result:");
-        printFormattedMatrix(standardAnswer);
+//        System.out.println("Standard Result:");
+//        printFormattedMatrix(standardAnswer);
 
         System.out.printf("【%s】耗时: %.3f ms%n", "printFormattedMatrix", (end - start) / 1_000_000.0);
 
@@ -195,11 +199,11 @@ class Solution {
 
     // 并查集数量比较而不是每一个contains
     public int[][] matrixRankTransform(int[][] matrix) {
-        var valueToPairsMap = new HashMap<Integer, HashSet<Pair>>();
+//        var valueToPairsMap = new HashMap<Integer, HashSet<Pair>>();
 
         var pairSet = new HashSet<Pair>();
 
-        var roundTurn = 2;
+//        var roundTurn = 2;
 
         int rowCount = matrix.length;
         int colCount = matrix[0].length;
@@ -220,7 +224,7 @@ class Solution {
                 rowMap.get(i).computeIfAbsent(matrix[i][j], _ -> new HashSet<Pair>()).add(pair);
                 colMap.get(j).computeIfAbsent(matrix[i][j], _ -> new HashSet<Pair>()).add(pair);
 
-                valueToPairsMap.computeIfAbsent(pair.value, _ -> new HashSet<Pair>()).add(pair);
+//                valueToPairsMap.computeIfAbsent(pair.value, _ -> new HashSet<Pair>()).add(pair);
             }
         }
 
@@ -282,56 +286,56 @@ class Solution {
         }
 
         // 构建连通图
-        var valueGraphMap = new HashMap<Integer, ArrayList<HashSet<Pair>>>();
-
-        for (Map.Entry<Integer, HashSet<Pair>> entry : valueToPairsMap.entrySet()) {
-            var regions = new ArrayList<HashSet<Pair>>();
-
-            for (var pair : entry.getValue()) {
-                var isFindRegion = false;
-
-                for (var region: regions){
-                    var canAddCurrentRegion = false;
-                    for (var otherPair: region){
-                        if(pair.row == otherPair.row || pair.column == otherPair.column){
-                            isFindRegion = true;
-                            canAddCurrentRegion = true;
-                            break;
-                        }
-                    }
-
-                    if(canAddCurrentRegion){
-                        region.add(pair);
-                    }
-                }
-
-                if(!isFindRegion){
-                    var newRegion = new HashSet<Pair>();
-                    newRegion.add(pair);
-                    regions.add(newRegion);
-                }
-            }
-
-            var finalRegions = new ArrayList<HashSet<Pair>>();
-            for (var region: regions){
-                for (var otherRegion: regions){
-                    if(!Collections.disjoint(region, otherRegion)){
-                        region.addAll(otherRegion);
-                        finalRegions.add(region);
-                    }
-                }
-            }
-            valueGraphMap.put(entry.getKey(), finalRegions);
-        }
+//        var valueGraphMap = new HashMap<Integer, ArrayList<HashSet<Pair>>>();
+//
+//        for (Map.Entry<Integer, HashSet<Pair>> entry : valueToPairsMap.entrySet()) {
+//            var regions = new ArrayList<HashSet<Pair>>();
+//
+//            for (var pair : entry.getValue()) {
+//                var isFindRegion = false;
+//
+//                for (var region: regions){
+//                    var canAddCurrentRegion = false;
+//                    for (var otherPair: region){
+//                        if(pair.row == otherPair.row || pair.column == otherPair.column){
+//                            isFindRegion = true;
+//                            canAddCurrentRegion = true;
+//                            break;
+//                        }
+//                    }
+//
+//                    if(canAddCurrentRegion){
+//                        region.add(pair);
+//                    }
+//                }
+//
+//                if(!isFindRegion){
+//                    var newRegion = new HashSet<Pair>();
+//                    newRegion.add(pair);
+//                    regions.add(newRegion);
+//                }
+//            }
+//
+//            var finalRegions = new ArrayList<HashSet<Pair>>();
+//            for (var region: regions){
+//                for (var otherRegion: regions){
+//                    if(!Collections.disjoint(region, otherRegion)){
+//                        region.addAll(otherRegion);
+//                        finalRegions.add(region);
+//                    }
+//                }
+//            }
+//            valueGraphMap.put(entry.getKey(), finalRegions);
+//        }
 
 //        System.out.println("valueGraphMap: " + valueGraphMap);
 
         while (!pairSet.isEmpty()){
-            System.out.println("Current round: " + roundTurn);
-            long roundTimeStart = System.nanoTime();
+//            System.out.println("Current round: " + roundTurn);
+//            long roundTimeStart = System.nanoTime();
             var currentPairList = new HashSet<>(pairSet);
             pairSet.clear();
-            System.out.println("currentPairList size " + currentPairList.size());
+//            System.out.println("currentPairList size " + currentPairList.size());
             currentPairList.forEach(pair -> {
                 pair.inUse = false;
                 var specificRowMap = rowMap.get(pair.row);
@@ -365,61 +369,61 @@ class Solution {
                     }
                 }
 
-                for (var currentSet : valueGraphMap.get(pair.value)){
-                    if(currentSet.contains(pair)){
-                        for (Pair currentPair : currentSet) {
-                            var newRankValue = pair.rankValue;
-                            if (newRankValue > currentPair.rankValue) {
-                                currentPair.rankValue = newRankValue;
+//                for (var currentSet : valueGraphMap.get(pair.value)){
+//                    if(currentSet.contains(pair)){
+//                        for (Pair currentPair : currentSet) {
+//                            var newRankValue = pair.rankValue;
+//                            if (newRankValue > currentPair.rankValue) {
+//                                currentPair.rankValue = newRankValue;
+//
+//                                if (!currentPair.inUse) {
+//                                    pairSet.add(currentPair);
+//                                    currentPair.inUse = true;
+//                                }
+//                            }
+//                        }
+//                        break;
+//                    }
+//                }
 
-                                if (!currentPair.inUse) {
-                                    pairSet.add(currentPair);
-                                    currentPair.inUse = true;
-                                }
-                            }
+                var sameRow = specificRowMap.get(pair.value);
+                var sameColumn = specificColMap.get(pair.value);
+
+                for (Pair currentPair : sameRow) {
+                    var newRankValue = pair.rankValue;
+                    if (newRankValue > currentPair.rankValue) {
+                        currentPair.rankValue = newRankValue;
+
+                        var pairX = pairs[currentPair.row][currentPair.column];
+                        pairX.rankValue = newRankValue;
+                        if (!pair.inUse) {
+                            pairSet.add(pairX);
+                            pairX.inUse = true;
                         }
-                        break;
                     }
                 }
 
-//                var sameRow = specificRowMap.get(pair.value);
-//                var sameColumn = specificColMap.get(pair.value);
-//
-//                for (Pair currentPair : sameRow) {
-//                    var newRankValue = pair.rankValue;
-//                    if (newRankValue > currentPair.rankValue) {
-//                        currentPair.rankValue = newRankValue;
-//
-//                        var pairX = pairs[currentPair.row][currentPair.column];
-//                        pairX.rankValue = newRankValue;
-//                        if (!pair.inUse) {
-//                            pairSet.add(pairX);
-//                            pairX.inUse = true;
-//                        }
-//                    }
-//                }
-//
-//                for (Pair currentPair : sameColumn) {
-//                    var newRankValue = pair.rankValue;
-//                    if (newRankValue > currentPair.rankValue) {
-//                        currentPair.rankValue = newRankValue;
-//
-//                        var pairX = pairs[currentPair.row][currentPair.column];
-//                        pairX.rankValue = newRankValue;
-//                        if (!pair.inUse) {
-//                            pairSet.add(pairX);
-//                            pairX.inUse = true;
-//                        }
-//                    }
-//                }
+                for (Pair currentPair : sameColumn) {
+                    var newRankValue = pair.rankValue;
+                    if (newRankValue > currentPair.rankValue) {
+                        currentPair.rankValue = newRankValue;
+
+                        var pairX = pairs[currentPair.row][currentPair.column];
+                        pairX.rankValue = newRankValue;
+                        if (!pair.inUse) {
+                            pairSet.add(pairX);
+                            pairX.inUse = true;
+                        }
+                    }
+                }
             });
 
-            roundTurn++;
-            long roundTimeEnd = System.nanoTime();
-            System.out.printf("【%s】耗时: %.3f ms%n", "CalcRank", (roundTimeEnd - roundTimeStart) / 1_000_000.0);
+//            roundTurn++;
+//            long roundTimeEnd = System.nanoTime();
+//            System.out.printf("【%s】耗时: %.3f ms%n", "CalcRank", (roundTimeEnd - roundTimeStart) / 1_000_000.0);
         }
 
-        System.out.println("Used round turn: " + roundTurn);
+//        System.out.println("Used round turn: " + roundTurn);
         return Arrays.stream(pairs)
                 .map(row -> Arrays.stream(row).mapToInt(p -> p.rankValue).toArray())
                 .toArray(int[][]::new);
