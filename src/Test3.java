@@ -33,6 +33,7 @@ class Solution3 {
             var region = new ConnectRegion(row + col);
             for(int[] pair : pairs){
                 // pair[0] 横坐标    pair[1] 纵坐标
+                // 列坐标需要用列本身的数值加上行数对应的偏移
                 region.connect(pair[0], pair[1] + row);
             }
 
@@ -40,7 +41,8 @@ class Solution3 {
             var connectMap = new HashMap<Integer, HashSet<int[]>>();
             // 第二步，归属每一个点，到对应的连通空间里
             for (int[] pair: pairs){
-                int daddy = region.find(pair[1]);
+                // 用列坐标进行查询的时候，要加上行数对应的偏移
+                int daddy = region.find(pair[1] + row);
 
                 connectMap.computeIfAbsent(daddy, _ -> new HashSet<int[]>()).add(pair);
             }
