@@ -1,0 +1,93 @@
+import java.util.*;
+
+class Solution3 {
+    public int[][] matrixRankTransform(int[][] matrix) {
+        int row = matrix.length;
+        int col = matrix[0].length;
+
+        int[][] rank = new int[row][col];
+
+        // 现存每行和每列的最大值记录
+        int[] maxRow = new int[row];
+        int[] maxCol = new int[col];
+
+        // 把同一个大小的数，归并起来
+        var sortedNumber = new TreeMap<Integer, HashSet<int[]>>();
+
+        // [1] -> [(1,2), (3,4)]     [2] -> [(0,0), (1,1)]
+        for(int i=0;i<row;i++){
+            for(int j=0;j<col;j++){
+                sortedNumber.computeIfAbsent(matrix[i][j], _ -> new HashSet<int[]>()).add(new int[]{i, j});
+            }
+        }
+
+        // 不连通的值就不会互相影响
+        // 连通的值才会互相影响
+        // 只应该更新连通的值
+
+        // entry  key 就是实际的值   value 就是对应的点阵列表
+        for(Map.Entry entry : sortedNumber.entrySet()){
+            // 每一个点数列表
+            var pairs = (HashSet<int[]>)entry.getValue();
+
+            // 第一步构建连通空间
+            var region = new ConnectRegion(row + col);
+            for(int[] pair : pairs){
+                // pair[0] 横坐标    pair[1] 纵坐标
+                region.connect(pair[0], pair[1] + row);
+            }
+
+            // key就是每一个连通空间编号，值就是点位集合
+            var connectMap = new HashMap<Integer, HashSet<int[]>>();
+            // 第二步，归属每一个点，到对应的连通空间里
+            for (int[] pair: pairs){
+                int daddy = region.find(pair[1]);
+
+                connectMap.computeIfAbsent(daddy, _ -> new HashSet<int[]>()).add(pair);
+            }
+
+
+            // 第三步，将每一个连通区域进行统一的rank计算和更新
+            for (var connectedPairsEntry: connectMap.entrySet()){
+                var connectedPairs = connectedPairsEntry.getValue();
+                int rankScore = 1;
+                for(int[] connectedPair: connectedPairs){
+                    var rowMax = maxRow[connectedPair[0]];
+                    var colMax = maxCol[connectedPair[1]];
+                    rankScore = Math.max(rankScore, Math.max(rowMax, colMax) + 1);
+                }
+
+                for(int[] connectedPair: connectedPairs) {
+                    rank[connectedPair[0]][connectedPair[1]] = rankScore;
+                    maxRow[connectedPair[0]] = rankScore;
+                    maxCol[connectedPair[1]] = rankScore;
+                }
+            }
+        }
+
+        return rank;
+    }
+
+    public static class ConnectRegion{
+        int[] whoIsYourDaddy;
+
+        public ConnectRegion(int size){
+            whoIsYourDaddy = new int[size];
+            for(int i=0;i<size;i++){
+                whoIsYourDaddy[i]=i;
+            }
+        }
+
+        public void connect(int i, int j){
+            whoIsYourDaddy[find(i)] = find(j);
+        }
+
+        public int find(int i){
+            if (whoIsYourDaddy[i] != i) {
+                whoIsYourDaddy[i] = find(whoIsYourDaddy[i]);
+            }
+
+            return whoIsYourDaddy[i];
+        }
+    }
+}
