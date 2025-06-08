@@ -26,10 +26,9 @@ class Solution3 {
         // 只应该更新连通的值
 
         // entry  key 就是实际的值   value 就是对应的点阵列表
-        for(Map.Entry entry : sortedNumber.entrySet()){
-            // 每一个点数列表
-            var pairs = (HashSet<int[]>)entry.getValue();
 
+        // pairs: 每一个点数列表
+        for(var pairs : sortedNumber.values()){
             // 第一步构建连通空间
             var region = new ConnectRegion(row + col);
             for(int[] pair : pairs){
@@ -48,8 +47,7 @@ class Solution3 {
 
 
             // 第三步，将每一个连通区域进行统一的rank计算和更新
-            for (var connectedPairsEntry: connectMap.entrySet()){
-                var connectedPairs = connectedPairsEntry.getValue();
+            for (var connectedPairs: connectMap.values()){
                 int rankScore = 1;
                 for(int[] connectedPair: connectedPairs){
                     var rowMax = maxRow[connectedPair[0]];
