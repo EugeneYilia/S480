@@ -239,10 +239,9 @@ class Solution {
             }
         }
 
-        var intersectedPairs = new HashSet<Pair>(minimalRowPairs);
-        intersectedPairs.retainAll(minimalColumnPairs);
+        minimalRowPairs.retainAll(minimalColumnPairs);
 
-        pairSet.addAll(intersectedPairs);
+        pairSet.addAll(minimalRowPairs);
 
         while (true){
             var isUsedChanged = false;
