@@ -193,6 +193,7 @@ class Solution {
         }
     }
 
+    // 并查集数量比较而不是每一个contains
     public int[][] matrixRankTransform(int[][] matrix) {
         var valueToPairsMap = new HashMap<Integer, HashSet<Pair>>();
 
@@ -205,65 +206,38 @@ class Solution {
 
         var pairs = new Pair[rowCount][colCount];
 
-        var rowMap = new HashMap<Integer, TreeMap<Integer, ArrayList<Pair>>>();
-        var colMap = new HashMap<Integer, TreeMap<Integer, ArrayList<Pair>>>();
+        var rowMap = new HashMap<Integer, TreeMap<Integer, HashSet<Pair>>>();
+        var colMap = new HashMap<Integer, TreeMap<Integer, HashSet<Pair>>>();
 
-        var minimalRowPairs = new HashSet<Pair>();
+
+
         for (int i = 0; i < rowCount; i++) {
-            var rowTreeMap = new TreeMap<Integer, ArrayList<Pair>>();
-            rowMap.put(i, rowTreeMap);
-
-            var minimalRowValue = Integer.MAX_VALUE;
-            var minimalRowIndex = new HashSet<Integer>();
+            rowMap.put(i, new TreeMap<Integer, HashSet<Pair>>());
 
             for (int j = 0; j < colCount; j++) {
-                var value = matrix[i][j];
-                rowTreeMap.putIfAbsent(value, new ArrayList<>());
-                var pair = new Pair(i, j, value, 0);
+                colMap.putIfAbsent(j, new TreeMap<>());
+                var pair = new Pair(i, j, matrix[i][j], 0);
                 pairs[i][j] = pair;
-                rowTreeMap.get(value).add(pair);
 
-                valueToPairsMap.putIfAbsent(value, new HashSet<Pair>());
-                valueToPairsMap.get(value).add(pair);
+                rowMap.get(i).computeIfAbsent(matrix[i][j], _ -> new HashSet<Pair>()).add(pair);
+                colMap.get(j).computeIfAbsent(matrix[i][j], _ -> new HashSet<Pair>()).add(pair);
 
-                if (value < minimalRowValue) {
-                    minimalRowIndex.clear();
-                    minimalRowValue = value;
-                    minimalRowIndex.add(j);
-                } else if (value == minimalRowValue) {
-                    minimalRowIndex.add(j);
-                }
-            }
-
-            for (Integer index : minimalRowIndex) {
-                minimalRowPairs.add(pairs[i][index]);
+                valueToPairsMap.computeIfAbsent(pair.value, _ -> new HashSet<Pair>()).add(pair);
             }
         }
 
+        var minimalRowPairs = new HashSet<Pair>();
         var minimalColumnPairs = new HashSet<Pair>();
-        for (int i = 0; i < colCount; i++) {
-            var colTreeMap = new TreeMap<Integer, ArrayList<Pair>>();
-            colMap.put(i, colTreeMap);
 
-            var minimalColumnValue = Integer.MAX_VALUE;
-            var minimalColumnIndex = new HashSet<Integer>();
-
-            for (int j = 0; j < rowCount; j++) {
-                var value = matrix[j][i];
-                colTreeMap.putIfAbsent(value, new ArrayList<>());
-                colTreeMap.get(value).add(pairs[j][i]);
-
-                if (value < minimalColumnValue) {
-                    minimalColumnIndex.clear();
-                    minimalColumnValue = value;
-                    minimalColumnIndex.add(j);
-                } else if (value == minimalColumnValue) {
-                    minimalColumnIndex.add(j);
-                }
+        for (var row : rowMap.entrySet()) {
+            for (var value : row.getValue().firstEntry().getValue()){
+                minimalRowPairs.add(value);
             }
+        }
 
-            for (Integer index : minimalColumnIndex) {
-                minimalColumnPairs.add(pairs[index][i]);
+        for (var col : colMap.entrySet()) {
+            for (var value : col.getValue().firstEntry().getValue()){
+                minimalColumnPairs.add(value);
             }
         }
 
