@@ -1,3 +1,5 @@
+import JiaoJiao.RankMatrix;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -6,6 +8,18 @@ import java.util.*;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class RankTransformOfAMatrix {
+//    public static void main(String[] args) {
+//
+//        var originalMatrix = new int[][]{
+//                {-37,-50,-3,44},
+//                {-37,46,13,-32},
+//                {47,-42,-3,-40},
+//                {-17,-22,-39,24}};
+//
+//        var matrix  = new RankMatrix();
+//        matrix.matrixRankTransform(originalMatrix);
+//    }
+
     public static void main(String[] args) throws IOException {
 
         Solution solution = new Solution();
