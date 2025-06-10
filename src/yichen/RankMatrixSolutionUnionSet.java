@@ -55,8 +55,7 @@ public class RankMatrixSolutionUnionSet {
         int[][] rank = new int[row][col];
 
         // 现存每行和每列的最大值记录
-        int[] maxRow = new int[row];
-        int[] maxCol = new int[col];
+        int[] maxRanks = new int[row + col];
 
         // 把同一个大小的数，归并起来
         var originalNumber = new HashMap<Integer, ArrayList<int[]>>();
@@ -99,15 +98,15 @@ public class RankMatrixSolutionUnionSet {
             for (var connectedPairs: connectMap.values()){
                 int rankScore = 1;
                 for(int[] connectedPair: connectedPairs){
-                    var rowMax = maxRow[connectedPair[0]];
-                    var colMax = maxCol[connectedPair[1]];
+                    var rowMax = maxRanks[connectedPair[0]];
+                    var colMax = maxRanks[connectedPair[1] + row];
                     rankScore = Math.max(rankScore, Math.max(rowMax, colMax) + 1);
                 }
 
                 for(int[] connectedPair: connectedPairs) {
                     rank[connectedPair[0]][connectedPair[1]] = rankScore;
-                    maxRow[connectedPair[0]] = rankScore;
-                    maxCol[connectedPair[1]] = rankScore;
+                    maxRanks[connectedPair[0]] = rankScore;
+                    maxRanks[connectedPair[1] + row] = rankScore;
                 }
             }
         }
