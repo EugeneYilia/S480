@@ -59,14 +59,15 @@ public class RankMatrixSolutionUnionSet {
         int[] maxCol = new int[col];
 
         // 把同一个大小的数，归并起来
-        var sortedNumber = new TreeMap<Integer, ArrayList<int[]>>();
+        var originalNumber = new HashMap<Integer, ArrayList<int[]>>();
 
         // [1] -> [(1,2), (3,4)]     [2] -> [(0,0), (1,1)]
         for(int i=0;i<row;i++){
             for(int j=0;j<col;j++){
-                sortedNumber.computeIfAbsent(matrix[i][j], _ -> new ArrayList<int[]>()).add(new int[]{i, j});
+                originalNumber.computeIfAbsent(matrix[i][j], _ -> new ArrayList<int[]>()).add(new int[]{i, j});
             }
         }
+        var sortedNumber = new TreeMap<Integer, ArrayList<int[]>>(originalNumber);
 
         // 不连通的值就不会互相影响
         // 连通的值才会互相影响
