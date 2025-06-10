@@ -26,9 +26,9 @@ import java.util.*;
 // The test cases are generated so that answer is unique under the given rules.
 public class OptimizedRankMatrixSolutionUnionSet {
     public static void main(String[] args) throws IOException {
-        var originalMatrix = MatrixUtil.parseMatrix(
-                Files.readString(Path.of("data"))
-        );
+//        var originalMatrix = MatrixUtil.parseMatrix(
+//                Files.readString(Path.of("data"))
+//        );
 
 //        var originalMatrix = parseMatrix(
 //                Files.readString(Path.of("data2"))
@@ -37,12 +37,16 @@ public class OptimizedRankMatrixSolutionUnionSet {
 //        var originalMatrix = parseMatrix(
 //                Files.readString(Path.of("data3"))
 //        );
+        var originalMatrix = new int[][]{
+                {1, 2 },
+                {3, 4},
+        };
 
-        System.out.println("Row count: " + originalMatrix.length + "  Column count: " + originalMatrix[0].length);
+//        System.out.println("Row count: " + originalMatrix.length + "  Column count: " + originalMatrix[0].length);
         long start = System.nanoTime();
         var result = matrixRankTransform(originalMatrix);
         long end = System.nanoTime();
-        System.out.printf("【%s】耗时: %.3f ms%n", "printFormattedMatrix", (end - start) / 1_000_000.0);
+//        System.out.printf("【%s】耗时: %.3f ms%n", "printFormattedMatrix", (end - start) / 1_000_000.0);
 
         var standardAnswer = new RankMatrixSolution2().matrixRankTransform(originalMatrix);
         System.out.println("Answer is right: " + MatrixUtil.areMatricesEqual(result, standardAnswer));

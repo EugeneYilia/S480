@@ -4,7 +4,7 @@ import java.util.*;
 
 public class RankMatrixSolution2 {
     public int[][] matrixRankTransform(int[][] m) {
-        long rowMapTimeStart = System.nanoTime();
+//        long rowMapTimeStart = System.nanoTime();
 
         int M = m.length, N = m[0].length;
         int[][] a = new int[M][N];
@@ -72,8 +72,8 @@ public class RankMatrixSolution2 {
             }
         }
 
-        long rowMapTimeEnd = System.nanoTime();
-        System.out.printf("【%s】耗时: %.3f ms%n", "Standard Time", (rowMapTimeEnd - rowMapTimeStart) / 1_000_000.0);
+//        long rowMapTimeEnd = System.nanoTime();
+//        System.out.printf("【%s】耗时: %.3f ms%n", "Standard Time", (rowMapTimeEnd - rowMapTimeStart) / 1_000_000.0);
         return a;
     }
 }
