@@ -85,13 +85,13 @@ public class RankMatrixSolutionUnionSet {
             }
 
             // key就是每一个连通空间编号，值就是点位集合
-            var connectMap = new HashMap<Integer, HashSet<int[]>>();
+            var connectMap = new HashMap<Integer, ArrayList<int[]>>();
             // 第二步，归属每一个点，到对应的连通空间里
             for (int[] pair: pairs){
                 // 用列坐标进行查询的时候，要加上行数对应的偏移
                 int daddy = region.find(pair[1] + row);
 
-                connectMap.computeIfAbsent(daddy, _ -> new HashSet<int[]>()).add(pair);
+                connectMap.computeIfAbsent(daddy, _ -> new ArrayList<int[]>()).add(pair);
             }
 
 
