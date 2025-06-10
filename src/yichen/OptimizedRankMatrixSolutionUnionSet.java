@@ -61,8 +61,8 @@ public class OptimizedRankMatrixSolutionUnionSet {
         var originalNumber = new HashMap<Integer, List<int[]>>();
 
         // [1] -> [(1,2), (3,4)]     [2] -> [(0,0), (1,1)]
-        for(int i=0;i<row;i++){
-            for(int j=0;j<col;j++){
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
                 originalNumber.computeIfAbsent(matrix[i][j], _ -> new ArrayList<int[]>()).add(new int[]{i, j});
             }
         }
@@ -74,10 +74,10 @@ public class OptimizedRankMatrixSolutionUnionSet {
         // entry  key 就是实际的值   value 就是对应的点阵列表
 
         // pairs: 每一个点数列表
-        for(var pairs : new TreeMap<>(originalNumber).values()){
+        for (var pairs : new TreeMap<>(originalNumber).values()) {
             // 第一步构建连通空间
             var region = new ConnectRegion(row + col);
-            for(int[] pair : pairs){
+            for (int[] pair : pairs) {
                 // pair[0] 横坐标    pair[1] 纵坐标
                 // 列坐标需要用列本身的数值加上行数对应的偏移
                 var root = region.connect(pair[0], pair[1] + row);
@@ -87,7 +87,7 @@ public class OptimizedRankMatrixSolutionUnionSet {
 
 
             // 第三步，将每一个连通区域进行统一的rank计算和更新
-            for (int[] pair : pairs){
+            for (int[] pair : pairs) {
                 var maxRank = region.rank[region.find(pair[1] + row)] + 1;
                 rank[pair[0]][pair[1]] = maxRank;
 
@@ -99,30 +99,30 @@ public class OptimizedRankMatrixSolutionUnionSet {
         return rank;
     }
 
-    public static class ConnectRegion{
+    public static class ConnectRegion {
         int[] whoIsYourDaddy;
         int[] rank;
 
-        public ConnectRegion(int size){
+        public ConnectRegion(int size) {
             whoIsYourDaddy = new int[size];
             rank = new int[size];
-            for(int i=0;i<size;i++){
-                whoIsYourDaddy[i]=i;
+            for (int i = 0; i < size; i++) {
+                whoIsYourDaddy[i] = i;
             }
         }
 
-        public int connect(int i, int j){
+        public int connect(int i, int j) {
             int root = find(j);
             int source = find(i);
 
             whoIsYourDaddy[source] = root;
-            if (rank[source] > rank[root]){
+            if (rank[source] > rank[root]) {
                 rank[root] = rank[source];
             }
             return root;
         }
 
-        public int find(int i){
+        public int find(int i) {
             if (whoIsYourDaddy[i] != i) {
                 whoIsYourDaddy[i] = find(whoIsYourDaddy[i]);
             }
