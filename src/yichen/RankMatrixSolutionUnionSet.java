@@ -67,7 +67,6 @@ public class RankMatrixSolutionUnionSet {
                 originalNumber.computeIfAbsent(matrix[i][j], _ -> new ArrayList<int[]>()).add(new int[]{i, j});
             }
         }
-        var sortedNumber = new TreeMap<Integer, ArrayList<int[]>>(originalNumber);
 
         // 不连通的值就不会互相影响
         // 连通的值才会互相影响
@@ -76,7 +75,7 @@ public class RankMatrixSolutionUnionSet {
         // entry  key 就是实际的值   value 就是对应的点阵列表
 
         // pairs: 每一个点数列表
-        for(var pairs : sortedNumber.values()){
+        for(var pairs : new TreeMap<>(originalNumber).values()){
             // 第一步构建连通空间
             var region = new ConnectRegion(row + col);
             for(int[] pair : pairs){
