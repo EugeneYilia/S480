@@ -58,7 +58,7 @@ public class RankMatrixSolutionUnionSet {
         int[] maxRanks = new int[row + col];
 
         // 把同一个大小的数，归并起来
-        var originalNumber = new HashMap<Integer, ArrayList<int[]>>();
+        var originalNumber = new HashMap<Integer, List<int[]>>();
 
         // [1] -> [(1,2), (3,4)]     [2] -> [(0,0), (1,1)]
         for(int i=0;i<row;i++){
@@ -84,7 +84,7 @@ public class RankMatrixSolutionUnionSet {
             }
 
             // key就是每一个连通空间编号，值就是点位集合
-            var connectMap = new HashMap<Integer, ArrayList<int[]>>();
+            var connectMap = new HashMap<Integer, List<int[]>>();
             // 第二步，归属每一个点，到对应的连通空间里
             for (int[] pair: pairs){
                 // 用列坐标进行查询的时候，要加上行数对应的偏移
