@@ -1,4 +1,6 @@
-import JiaoJiao.RankMatrix;
+package yichen;
+
+import yichen.util.MatrixUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,7 +9,7 @@ import java.util.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class RankTransformOfAMatrix {
+public class RankTransformOfAMatrixBFS {
 //    public static void main(String[] args) {
 //
 //        var originalMatrix = new int[][]{
@@ -65,17 +67,17 @@ public class RankTransformOfAMatrix {
 //        };
 
 
-//        var originalMatrix = parseMatrix(
-//                Files.readString(Path.of("data"))
-//        );
+        var originalMatrix = MatrixUtil.parseMatrix(
+                Files.readString(Path.of("data"))
+        );
 
 //        var originalMatrix = parseMatrix(
 //                Files.readString(Path.of("data2"))
 //        );
 
-        var originalMatrix = parseMatrix(
-                Files.readString(Path.of("data3"))
-        );
+//        var originalMatrix = parseMatrix(
+//                Files.readString(Path.of("data3"))
+//        );
 
         System.out.println("Row count: " + originalMatrix.length + "  Column count: " + originalMatrix[0].length);
         long start = System.nanoTime();
@@ -84,7 +86,7 @@ public class RankTransformOfAMatrix {
 //        System.out.println("Result:");
 //        printFormattedMatrix(result);
 
-        var standardAnswer = new Solution2().matrixRankTransform(originalMatrix);
+        var standardAnswer = new RankMatrixSolutionUnionSet().matrixRankTransform(originalMatrix);
 //        System.out.println("Standard Result:");
 //        printFormattedMatrix(standardAnswer);
 
@@ -96,66 +98,10 @@ public class RankTransformOfAMatrix {
 //            throw new RuntimeException(e);
 //        }
 
-        System.out.println("Answer is right: " + areMatricesEqual(result, standardAnswer));
+        System.out.println("Answer is right: " + MatrixUtil.areMatricesEqual(result, standardAnswer));
     }
 
-    public static int[][] parseMatrix(String input) {
-        // 去掉首尾空白与中括号
-        input = input.trim();
-        if (input.startsWith("[")) input = input.substring(1);
-        if (input.endsWith("]")) input = input.substring(0, input.length() - 1);
 
-        // 处理空数组
-        if (input.isEmpty()) return new int[0][0];
-
-        // 按子数组分割
-        List<int[]> rows = new ArrayList<>();
-        for (String rowStr : input.split("],")) {
-            rowStr = rowStr.replaceAll("\\[", "").replaceAll("]", "").trim();
-            if (rowStr.isEmpty()) {
-                rows.add(new int[0]);
-            } else {
-                String[] nums = rowStr.split(",");
-                int[] row = new int[nums.length];
-                for (int i = 0; i < nums.length; i++) {
-                    row[i] = Integer.parseInt(nums[i].trim());
-                }
-                rows.add(row);
-            }
-        }
-
-        return rows.toArray(new int[0][]);
-    }
-
-    public static void printFormattedMatrix(int[][] matrix) {
-        for (int[] row : matrix) {
-            for (int val : row) {
-                System.out.printf("%4d", val); // 宽度为4，右对齐
-            }
-            System.out.println();
-        }
-    }
-
-    public static boolean areMatricesEqual(int[][] matrix1, int[][] matrix2) {
-        // 检查是否为 null
-        if (matrix1 == null || matrix2 == null) return false;
-
-        // 检查行数是否相同
-        if (matrix1.length != matrix2.length) return false;
-
-        for (int i = 0; i < matrix1.length; i++) {
-            // 检查列数是否相同
-            if (matrix1[i].length != matrix2[i].length) return false;
-
-            for (int j = 0; j < matrix1[i].length; j++) {
-                if (matrix1[i][j] != matrix2[i][j]) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
 }
 
 

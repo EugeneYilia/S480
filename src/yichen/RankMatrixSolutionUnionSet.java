@@ -1,3 +1,11 @@
+package yichen;
+
+import test.RankMatrixSolution2;
+import yichen.util.MatrixUtil;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 
@@ -16,8 +24,31 @@ import java.util.*;
 // If p > q then rank(p) > rank(q)
 // The rank should be as small as possible.
 // The test cases are generated so that answer is unique under the given rules.
-class Solution3 {
-    public int[][] matrixRankTransform(int[][] matrix) {
+public class RankMatrixSolutionUnionSet {
+    public static void main(String[] args) throws IOException {
+        var originalMatrix = MatrixUtil.parseMatrix(
+                Files.readString(Path.of("data"))
+        );
+
+//        var originalMatrix = parseMatrix(
+//                Files.readString(Path.of("data2"))
+//        );
+
+//        var originalMatrix = parseMatrix(
+//                Files.readString(Path.of("data3"))
+//        );
+
+        System.out.println("Row count: " + originalMatrix.length + "  Column count: " + originalMatrix[0].length);
+        long start = System.nanoTime();
+        var result = matrixRankTransform(originalMatrix);
+        long end = System.nanoTime();
+        System.out.printf("【%s】耗时: %.3f ms%n", "printFormattedMatrix", (end - start) / 1_000_000.0);
+
+        var standardAnswer = new RankMatrixSolution2().matrixRankTransform(originalMatrix);
+        System.out.println("Answer is right: " + MatrixUtil.areMatricesEqual(result, standardAnswer));
+    }
+
+    public static int[][] matrixRankTransform(int[][] matrix) {
         int row = matrix.length;
         int col = matrix[0].length;
 

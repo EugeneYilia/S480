@@ -1,6 +1,8 @@
+package test;
+
 import java.util.*;
 
-class Solution2 {
+public class RankMatrixSolution2 {
     public int[][] matrixRankTransform(int[][] m) {
         long rowMapTimeStart = System.nanoTime();
 
