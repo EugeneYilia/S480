@@ -96,7 +96,7 @@ public class OptimizedRankMatrixSolutionUnionSet {
                 rank[pair[0]][pair[1]] = maxRank;
 
                 maxRanks[pair[0]] = maxRank;
-                maxRanks[pair[1]] = maxRank;
+                maxRanks[pair[1] + row] = maxRank;
             }
         }
 
