@@ -1,8 +1,5 @@
 package yichen;
 
-
-import java.util.HashSet;
-
 public class CanPartition {
     public static void main(String[] args) {
         System.out.println(new CanPartition().canPartition(new int[]{1,2,5}));
