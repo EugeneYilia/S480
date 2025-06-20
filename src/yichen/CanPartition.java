@@ -5,6 +5,7 @@ public class CanPartition {
         System.out.println(new CanPartition().canPartition(new int[]{1,2,5}));
     }
 
+    // 可达路径分析做法
     public boolean canPartition(int[] nums) {
         var sum = 0;
 
