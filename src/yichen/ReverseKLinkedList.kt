@@ -48,7 +48,7 @@ class ReverseKLinkedList {
                 current!!.next = oldNode
             }
 
-            batchFirst!!.next = next
+            batchFirst.next = next
             last = batchFirst
             batchFirst = next
         }
