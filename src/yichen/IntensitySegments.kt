@@ -96,6 +96,7 @@ class IntensitySegments {
         }
     }
 
+    // O(n)
     override fun toString() : String{
         var sum = 0
         val stringBuilder = StringBuilder("[")
