@@ -13,24 +13,30 @@ class ReverseArrayLastK {
     }
 
     // count记录
-    // 空间复杂度O(1)  时间复杂度最差O(n*k)
+    // 空间复杂度O(1)  时间复杂度最差O(n)
     fun rotate(nums: IntArray, k: Int): Unit {
         if (nums.size <= 1 || k == nums.size || k <= 0) {
             return
         }
 
+        var count = 0
         val rotateCount = k % nums.size
         for (index in 0 until rotateCount) {
+            if(count == nums.size) {
+                return
+            }
             var newIndex = index + rotateCount
             var lastElement = nums[index]
             while (newIndex != index) {
                 val newElement = nums[newIndex]
                 nums[newIndex] = lastElement
+                count++
                 newIndex = (newIndex + rotateCount) % nums.size
 
                 lastElement = newElement
             }
             nums[index] = lastElement
+            count++
         }
     }
 }
