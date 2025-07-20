@@ -55,12 +55,6 @@ class SequenceKValue {
                     result.add(3 * result.elementAt(sequence3Index) + 1)
                     sequence3Index++
                 }
-            } else if(sequence2Index <= result.size -1) {
-                result.add(2 * result.elementAt(sequence2Index) + 1)
-                sequence2Index++
-            } else if(sequence3Index <= result.size -1) {
-                result.add(3 * result.elementAt(sequence3Index) + 1)
-                sequence3Index++
             }
         }
 
