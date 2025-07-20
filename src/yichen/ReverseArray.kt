@@ -14,7 +14,6 @@ class ReverseArrayLastK {
         return if (b == 0) a else gcd(b, a % b)
     }
 
-    // count记录
     // 空间复杂度O(1)  时间复杂度最差O(n)
     fun rotate(nums: IntArray, k: Int): Unit {
         if (nums.size <= 1 || k == nums.size || k <= 0) {
