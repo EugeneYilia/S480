@@ -57,10 +57,9 @@ class CombineNumberToTarget {
                 if (token == '+' || token == '-'){
                     if(second != null){
                         first = calc(first.toInt(), second.toInt(), operator!!).toString()
-                    } else {
-                        operator = token
-                        second = ""
                     }
+                    operator = token
+                    second = ""
                 } else {
                     if(second != null){
                         second += token
