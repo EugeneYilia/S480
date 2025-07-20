@@ -11,33 +11,33 @@ class CombineNumberToTarget {
     // 1 2 3 4 5 6 7 8 9    =>  100
     // 1 + 2 + 34 - 5 + 67 - 8 + 9 = 100
     fun combineNumberToTarget(target: Int): List<String>{
-        var oneArray = arrayListOf<String>("1+", "1-", "1")
-        var twoArray = arrayListOf<String>("2+", "2-", "2")
-        var threeArray = arrayListOf<String>("3+", "3-", "3")
-        var fourArray = arrayListOf<String>("4+", "4-", "4")
-        var fiveArray = arrayListOf<String>("5+", "5-", "5")
-        var sixArray = arrayListOf<String>("6+", "6-", "6")
-        var sevenArray = arrayListOf<String>("7+", "7-", "7")
-        var eightArray = arrayListOf<String>("8+", "8-", "8")
+        val newStringArray = ArrayList<ArrayList<String>>()
+
+        for (i in 1..8) {
+            newStringArray.add(arrayListOf("${i}+", "${i}-", "${i}"))
+        }
+
         var countArray = arrayListOf<String>()
         var valueArray = arrayListOf<String>()
-        for (index in oneArray){
-            for (index2 in twoArray){
-                for (index3 in threeArray){
-                    for (index4 in fourArray){
-                        for (index5 in fiveArray){
-                            for (index6 in sixArray){
-                                for (index7 in sevenArray){
-                                    for (index8 in eightArray){
-                                        countArray.add(index + index2 + index3 + index4 + index5 + index6 + index7 + index8 + "9")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//        for (index in oneArray){
+//            for (index2 in twoArray){
+//                for (index3 in threeArray){
+//                    for (index4 in fourArray){
+//                        for (index5 in fiveArray){
+//                            for (index6 in sixArray){
+//                                for (index7 in sevenArray){
+//                                    for (index8 in eightArray){
+//                                        countArray.add(index + index2 + index3 + index4 + index5 + index6 + index7 + index8 + "9")
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
+
 
         fun calc(first: Int, second: Int, operator: Char): Int{
             if(operator == '+'){
