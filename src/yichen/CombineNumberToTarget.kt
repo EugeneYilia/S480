@@ -11,31 +11,32 @@ class CombineNumberToTarget {
     // 1 2 3 4 5 6 7 8 9    =>  100
     // 1 + 2 + 34 - 5 + 67 - 8 + 9 = 100
     fun combineNumberToTarget(target: Int): List<String>{
-        val newStringArray = ArrayList<ArrayList<String>>()
+        val srcArray = ArrayList<ArrayList<String>>()
 
         for (i in 1..8) {
-            newStringArray.add(arrayListOf("${i}+", "${i}-", "${i}"))
+            srcArray.add(arrayListOf("${i}+", "${i}-", "${i}"))
         }
 
         var countArray = arrayListOf<String>()
         var valueArray = arrayListOf<String>()
-//        for (index in oneArray){
-//            for (index2 in twoArray){
-//                for (index3 in threeArray){
-//                    for (index4 in fourArray){
-//                        for (index5 in fiveArray){
-//                            for (index6 in sixArray){
-//                                for (index7 in sevenArray){
-//                                    for (index8 in eightArray){
-//                                        countArray.add(index + index2 + index3 + index4 + index5 + index6 + index7 + index8 + "9")
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+
+        for (index in srcArray[0]){
+            for (index2 in srcArray[1]){
+                for (index3 in srcArray[2]){
+                    for (index4 in srcArray[3]){
+                        for (index5 in srcArray[4]){
+                            for (index6 in srcArray[5]){
+                                for (index7 in srcArray[6]){
+                                    for (index8 in srcArray[7]){
+                                        countArray.add(index + index2 + index3 + index4 + index5 + index6 + index7 + index8 + "9")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
 
 
