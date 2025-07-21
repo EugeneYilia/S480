@@ -17,34 +17,19 @@ class CombineNumberToTarget {
             srcArray.add(arrayListOf("${i}+", "${i}-", "${i}"))
         }
 
-        val expressionSrcArray = arrayListOf<String>()
-
-        fun buildExpressionSrc(index:Int, buffer: String){
-            if(index == srcArray.size){
-                expressionSrcArray.add(buffer + "9")
-                return
-            }
-
-            for(src in srcArray[index]){
-                buildExpressionSrc(index+1, buffer + src)
-            }
-        }
-
-        buildExpressionSrc(0, "")
-
         val resultArray = arrayListOf<String>()
 
-        fun calc(first: Int, second: Int, operator: Char): Int{
-            if(operator == '+'){
-                return first + second
-            } else if (operator == '-'){
-                return first - second
+        fun calc(expression: String){
+            fun calc(first: Int, second: Int, operator: Char): Int{
+                if(operator == '+'){
+                    return first + second
+                } else if (operator == '-'){
+                    return first - second
+                }
+
+                throw IllegalArgumentException("operator not recognized")
             }
 
-            throw IllegalArgumentException("operator not recognized")
-        }
-
-        for (expression in expressionSrcArray){
             var first = ""
             var second: String? = null
             var operator: Char? = null
@@ -74,6 +59,19 @@ class CombineNumberToTarget {
                 }
             }
         }
+
+        fun findQualifiedExpression(index:Int, buffer: String){
+            if(index == srcArray.size){
+                calc("${buffer}9")
+                return
+            }
+
+            for(src in srcArray[index]){
+                findQualifiedExpression(index+1, buffer + src)
+            }
+        }
+
+        findQualifiedExpression(0, "")
 
         return resultArray
     }
