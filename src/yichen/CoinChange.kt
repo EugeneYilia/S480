@@ -1,7 +1,7 @@
 package yichen
 
 fun main() {
-    CoinChange().change(5, intArrayOf(1 ,2 ,5));
+    println(CoinChange().change(5, intArrayOf(1 ,2 ,5)))
 }
 
 class CoinChange {
