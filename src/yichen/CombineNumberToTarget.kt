@@ -17,28 +17,22 @@ class CombineNumberToTarget {
             srcArray.add(arrayListOf("${i}+", "${i}-", "${i}"))
         }
 
-        var countArray = arrayListOf<String>()
-        var valueArray = arrayListOf<String>()
+        val expressionSrcArray = arrayListOf<String>()
 
-        for (index in srcArray[0]){
-            for (index2 in srcArray[1]){
-                for (index3 in srcArray[2]){
-                    for (index4 in srcArray[3]){
-                        for (index5 in srcArray[4]){
-                            for (index6 in srcArray[5]){
-                                for (index7 in srcArray[6]){
-                                    for (index8 in srcArray[7]){
-                                        countArray.add(index + index2 + index3 + index4 + index5 + index6 + index7 + index8 + "9")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+        fun buildExpressionSrc(index:Int, buffer: String){
+            if(index == srcArray.size){
+                expressionSrcArray.add(buffer + "9")
+                return
+            }
+
+            for(src in srcArray[index]){
+                buildExpressionSrc(index+1, buffer + src)
             }
         }
 
+        buildExpressionSrc(0, "")
 
+        val resultArray = arrayListOf<String>()
 
         fun calc(first: Int, second: Int, operator: Char): Int{
             if(operator == '+'){
@@ -50,7 +44,7 @@ class CombineNumberToTarget {
             throw IllegalArgumentException("operator not recognized")
         }
 
-        for (expression in countArray){
+        for (expression in expressionSrcArray){
             var first = ""
             var second: String? = null
             var operator: Char? = null
@@ -72,15 +66,15 @@ class CombineNumberToTarget {
             if(operator != null){
                 val result = calc(first.toInt(), second!!.toInt(), operator)
                 if(result == target){
-                    valueArray.add(expression)
+                    resultArray.add(expression)
                 }
             } else {
                 if(first.toInt() == target){
-                    valueArray.add(expression)
+                    resultArray.add(expression)
                 }
             }
         }
 
-        return valueArray
+        return resultArray
     }
 }
