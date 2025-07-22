@@ -3,12 +3,12 @@ package yichen
 import java.util.ArrayList
 
 fun main() {
-    println(KMaxArrayUseMoveWindow().getMaxKByValue(intArrayOf(7, 9, 2, 9, 9, 8, 3, 7, 2), 3))
-    println(KMaxArrayUseMoveWindow().getMaxKByIndex(intArrayOf(7, 9, 2, 9, 9, 8, 3, 7, 2), 3))
+    println(KMaxArrayUseMoveWindow().maxSlidingWindow(intArrayOf(7, 9, 2, 9, 9, 8, 3, 7, 2), 3))
+    println(KMaxArrayUseMoveWindow().maxSlidingWindowByIndex(intArrayOf(7, 9, 2, 9, 9, 8, 3, 7, 2), 3))
 }
 
 class KMaxArrayUseMoveWindow {
-    fun getMaxKByValue(nums: IntArray, k: Int): ArrayList<Int>? {
+    fun maxSlidingWindow(nums: IntArray, k: Int): ArrayList<Int>? {
         if (k <= 0) return null
         var size = nums.size
         var windowSize = minOf(nums.size, k)
@@ -35,7 +35,7 @@ class KMaxArrayUseMoveWindow {
         return result
     }
 
-    fun getMaxKByIndex(nums: IntArray, k: Int): ArrayList<Int>? {
+    fun maxSlidingWindowByIndex(nums: IntArray, k: Int): ArrayList<Int>? {
         if (k <= 0) return null
         var size = nums.size
         var windowSize = minOf(nums.size, k)
