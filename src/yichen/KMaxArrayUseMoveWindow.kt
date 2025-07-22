@@ -8,56 +8,56 @@ fun main() {
 }
 
 class KMaxArrayUseMoveWindow {
-    fun getMaxKByValue(src: IntArray, k: Int): ArrayList<Int>? {
+    fun getMaxKByValue(nums: IntArray, k: Int): ArrayList<Int>? {
         if (k <= 0) return null
-        var size = src.size
-        var windowSize = minOf(src.size, k)
+        var size = nums.size
+        var windowSize = minOf(nums.size, k)
         var left = 0
         var right = 0
-        var window = src.clone()
+        var window = nums.clone()
         for (i in 0 until windowSize) {
-            while (right > left && window[right - 1] < src[i]) {
+            while (right > left && window[right - 1] < nums[i]) {
                 right--
             }
-            window[right++] = src[i]
+            window[right++] = nums[i]
         }
         var result = arrayListOf(window[left])
         for (i in windowSize until size) {
-            if (window[left] == src[i - windowSize]) {
+            if (window[left] == nums[i - windowSize]) {
                 left++
             }
-            while (right > left && window[right - 1] < src[i]) {
+            while (right > left && window[right - 1] < nums[i]) {
                 right--
             }
-            window[right++] = src[i]
+            window[right++] = nums[i]
             result.add(window[left])
         }
         return result
     }
 
-    fun getMaxKByIndex(src: IntArray, k: Int): ArrayList<Int>? {
+    fun getMaxKByIndex(nums: IntArray, k: Int): ArrayList<Int>? {
         if (k <= 0) return null
-        var size = src.size
-        var windowSize = minOf(src.size, k)
+        var size = nums.size
+        var windowSize = minOf(nums.size, k)
         var left = 0
         var right = 0
-        var window = src.clone()
+        var window = nums.clone()
         for (i in 0 until windowSize) {
-            while (right > left && src[window[right - 1]] <= src[i]) {
+            while (right > left && nums[window[right - 1]] <= nums[i]) {
                 right--
             }
             window[right++] = i
         }
-        var result = arrayListOf(src[window[left]])
+        var result = arrayListOf(nums[window[left]])
         for (i in windowSize until size) {
             if (window[left] == i - windowSize) {
                 left++
             }
-            while (right > left && src[window[right - 1]] <= src[i]) {
+            while (right > left && nums[window[right - 1]] <= nums[i]) {
                 right--
             }
             window[right++] = i
-            result.add(src[window[left]])
+            result.add(nums[window[left]])
         }
         return result
     }
