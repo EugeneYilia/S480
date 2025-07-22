@@ -22,7 +22,7 @@ class KMaxArrayUseMoveWindow {
             window[right++] = src[i]
         }
         var result = arrayListOf(window[left])
-        for (i in k until size) {
+        for (i in windowSize until size) {
             if (window[left] == src[i - windowSize]) {
                 left++
             }
@@ -49,7 +49,7 @@ class KMaxArrayUseMoveWindow {
             window[right++] = i
         }
         var result = arrayListOf(src[window[left]])
-        for (i in k until size) {
+        for (i in windowSize until size) {
             if (window[left] == i - windowSize) {
                 left++
             }
