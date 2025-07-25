@@ -3,7 +3,7 @@ package yichen
 class LargestValidFeatureSet {
 
     // 7/15
-    fun findLargetValidFeatureSet(feature1: Array<Int>, feature2: Array<Int>): Int {
+    fun findLargestValidFeatureSet(feature1: Array<Int>, feature2: Array<Int>): Int {
         val size = feature1.size
 
         val trendUp = IntArray(size){1}
