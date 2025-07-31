@@ -33,5 +33,6 @@ bin/
 *.jfr
 *.ser
 
+gradle/**
 .gradle/
 build/
