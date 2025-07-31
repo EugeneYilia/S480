@@ -32,3 +32,5 @@ bin/
 *.log
 *.jfr
 *.ser
+
+.gradle/
