@@ -1,7 +1,8 @@
-package yichen
+package JiaoJiao
+
 
 fun main() {
-    val s = OptimalAccountBalancing()
+    val s = BalanceTransfer()
 
     val testCases = listOf(
         // case 1: 简单案例（两个交易，刚好可以互相抵消）
@@ -62,38 +63,36 @@ fun main() {
 }
 
 
-class OptimalAccountBalancing {
-    fun minTransfers(transactions: Array<IntArray>): Int{
+class BalanceTransfer {
+    fun minTransfers(transactions: Array<IntArray>): Int {
         val idToBalanceMap = mutableMapOf<Int, Int>()
-        for ((from, to, amount) in transactions){
+        for ((from, to, amount) in transactions) {
             idToBalanceMap[from] = idToBalanceMap.getOrDefault(from, 0) - amount
             idToBalanceMap[to] = idToBalanceMap.getOrDefault(to, 0) + amount
         }
 
-        val balances = idToBalanceMap.values.filter{it != 0}.toIntArray()
+        val balances = idToBalanceMap.values.filter { it != 0 }.toIntArray()
 
-        fun dfs(start: Int): Int{
-            if (start < balances.size && balances[start] == 0){
+        fun dfs(start: Int): Int {
+            if (start < balances.size  && balances[start] == 0) {
                 return dfs(start + 1)
             }
 
-            if(start == balances.size){
+            if (start == balances.size) {
                 return 0
             }
 
             var min = Int.MAX_VALUE
 
-            for(i in start + 1 until balances.size){
-                if(balances[start] * balances[i] < 0){
+            for (i in start + 1 until balances.size) {
+                if (balances[start] * balances[i] < 0) {
                     balances[i] += balances[start]
-                    min = minOf(min, 1 +  dfs(start + 1))
+                    min = minOf(min, 1 + dfs(start + 1) )
                     balances[i] -= balances[start]
                 }
             }
-
             return min
         }
-
         return dfs(0)
     }
 }
