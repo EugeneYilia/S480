@@ -5,7 +5,13 @@ public class MaxSubSequence {
         System.out.println(sut.getMaxSubSequence(new int[]{1, 1, 1, 1}, 2, 1));          // 输出: 2
         System.out.println(sut.getMaxSubSequence(new int[]{5, 1, 1, 5}, 3, 5));          // 输出: -1
         System.out.println(sut.getMaxSubSequence(new int[]{2, 2, 2}, 5, 2));             // 输出: 2
-        System.out.println(sut.getMaxSubSequence(new int[]{1, 2, 3, 4, 5}, 5, 5));       // 输出: 2
+        System.out.println(sut.getMaxSubSequence(new int[]{1, 2, 3, 4, 5}, 5, 5));       // 输出: 1
+        System.out.println(sut.getMaxSubSequence(new int[]{1, 2, 3, 0, 4, 5, 5}, 7, 3)); // 输出 4
+        System.out.println(sut.getMaxSubSequence(new int[]{5, 1, 1, 5}, 3, 5));         // 输出 -1
+        System.out.println(sut.getMaxSubSequence(new int[]{1, 2, 3, 4, 5}, 5, 5));      // 输出 1
+
+        System.out.println(sut.getMaxSubSequence(new int[]{6}, 5, 6));      // 输出 -1
+        System.out.println(sut.getMaxSubSequence(new int[]{6}, 6, 6));      // 输出 1
     }
     
     public int getMaxSubSequence(int[] nums, int k, int target) {
