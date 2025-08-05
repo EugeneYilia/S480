@@ -3,16 +3,12 @@ plugins {
     application
 }
 
+tasks.withType<JavaExec>().configureEach {
+    jvmArgs("-Dfile.encoding=UTF-8")
+}
+
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
-tasks.withType<JavaExec>().configureEach {
-    jvmArgs = (jvmArgs ?: listOf()) + listOf("-Dfile.encoding=UTF-8")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
