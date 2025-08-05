@@ -3,6 +3,24 @@ plugins {
     application
 }
 
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+tasks.withType<JavaExec>().configureEach {
+    jvmArgs = (jvmArgs ?: listOf()) + listOf("-Dfile.encoding=UTF-8")
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "20"
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -12,5 +30,5 @@ dependencies {
 }
 
 application {
-    mainClass.set("yichen.ScheduleStartTeamsKt") // ← 改成你的主类
+    mainClass.set("yichen.MaxSubSequence") // ← 改成你的主类
 }
