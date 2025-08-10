@@ -29,19 +29,19 @@ public class EugeneFileSystem {
         System.out.println(fs.ls("/a"));
     }
 
-    private final HashMap<String, FileNode> rootNodes = new HashMap<>();
+    private final TreeMap<String, FileNode> rootNodes = new TreeMap<>();
 
     static class FileNode{
         public boolean isDirectory;
         public String name;
         public String content;
-        public HashMap<String, FileNode> subFiles;
+        public TreeMap<String, FileNode> subFiles;
 
         public FileNode(
             boolean isDirectory,
             String name,
             String content,
-            HashMap<String, FileNode> subFiles)
+            TreeMap<String, FileNode> subFiles)
         {
             this.isDirectory = isDirectory;
             this.name = name;
@@ -59,7 +59,6 @@ public class EugeneFileSystem {
         List<String> result = new ArrayList<>();
         if(filePath.length == 0){
             result.addAll(rootNodes.keySet());
-            Collections.sort(result);
             return result;
         }
 
@@ -72,7 +71,6 @@ public class EugeneFileSystem {
 
         if(fileNode.isDirectory) {
             result.addAll(fileNode.subFiles.keySet());
-            Collections.sort(result);
         } else {
             result.add(fileNode.name);
         }
@@ -81,11 +79,11 @@ public class EugeneFileSystem {
 
     public void mkdir(String path) {
         String[] filePath = splitWithoutEmpty(path, "/");
-        FileNode fileNode = rootNodes.computeIfAbsent(filePath[0],_ -> new FileNode(true, filePath[0], null, new HashMap<>()));
+        FileNode fileNode = rootNodes.computeIfAbsent(filePath[0],_ -> new FileNode(true, filePath[0], null, new TreeMap<>()));
 
         for (int i = 1; i < filePath.length; i++) {
             String fileName = filePath[i];
-            fileNode = fileNode.subFiles.computeIfAbsent(fileName, _ -> new FileNode(true, fileName, null, new HashMap<>()));
+            fileNode = fileNode.subFiles.computeIfAbsent(fileName, _ -> new FileNode(true, fileName, null, new TreeMap<>()));
         }
     }
 
