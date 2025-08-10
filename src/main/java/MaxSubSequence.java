@@ -51,6 +51,7 @@ public class MaxSubSequence {
         System.out.println("✅ 所有断言通过！");
     }
 
+    // 时间复杂度O(n)
     public int getMaxSubSequence(int[] nums, int k, int target) {
         int maxSequenceCount = -1;
         if (target > k) {

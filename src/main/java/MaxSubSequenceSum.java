@@ -16,6 +16,8 @@ public class MaxSubSequenceSum {
         System.out.println(calcMaxValue(new int[]{5, -1}) == 4);    // ✅ 返回 4
         System.out.println(calcMaxValue(new int[]{3, 2}) == 5);     // ✅ 返回 5
     }
+
+    // 时间复杂度O(n)
     public static int calcMaxValue(int[] src){
         int left = 0;
         int right = 0;
