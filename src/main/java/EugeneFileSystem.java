@@ -20,11 +20,13 @@ public class EugeneFileSystem {
     public static void main(String[] args) {
         var fs = new EugeneFileSystem();
         System.out.println(fs.ls("/"));
+        fs.mkdir("/a/e");
         fs.mkdir("/a/b/c");
         fs.addContentToFile("/a/b/c/d", "hello");
         System.out.println(fs.ls("/"));
         System.out.println(fs.readContentFromFile("/a/b/c/d"));
         System.out.println(fs.ls("/a/b"));
+        System.out.println(fs.ls("/a"));
     }
 
     private final HashMap<String, FileNode> rootNodes = new HashMap<>();
