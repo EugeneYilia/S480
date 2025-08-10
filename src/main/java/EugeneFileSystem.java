@@ -55,16 +55,16 @@ public class EugeneFileSystem {
     }
 
     public List<String> ls(String path) {
-        String[] filePath = splitWithoutEmpty(path, "/");
+        String[] filePath = path.split("/");
         List<String> result = new ArrayList<>();
         if(filePath.length == 0){
             result.addAll(rootNodes.keySet());
             return result;
         }
 
-        FileNode fileNode = rootNodes.get(filePath[0]);
+        FileNode fileNode = rootNodes.get(filePath[1]);
 
-        for (int i = 1; i < filePath.length; i++) {
+        for (int i = 2; i < filePath.length; i++) {
             fileNode = fileNode.subFiles.get(filePath[i]);
         }
 
@@ -78,27 +78,27 @@ public class EugeneFileSystem {
     }
 
     public void mkdir(String path) {
-        String[] filePath = splitWithoutEmpty(path, "/");
-        FileNode fileNode = rootNodes.computeIfAbsent(filePath[0],_ -> new FileNode(true, filePath[0], null, new TreeMap<>()));
+        String[] filePath = path.split("/");
+        FileNode fileNode = rootNodes.computeIfAbsent(filePath[1],_ -> new FileNode(true, filePath[1], null, new TreeMap<>()));
 
-        for (int i = 1; i < filePath.length; i++) {
+        for (int i = 2; i < filePath.length; i++) {
             String fileName = filePath[i];
             fileNode = fileNode.subFiles.computeIfAbsent(fileName, _ -> new FileNode(true, fileName, null, new TreeMap<>()));
         }
     }
 
     public void addContentToFile(String filePath, String content) {
-        String[] path = splitWithoutEmpty(filePath, "/");
-        if(path.length == 1) {
-            FileNode fileNode = rootNodes.get(path[0]);
+        String[] path = filePath.split("/");
+        if(path.length == 2) {
+            FileNode fileNode = rootNodes.get(path[1]);
             if(fileNode != null) {
                 fileNode.content += content;
             } else {
-                rootNodes.put(path[0], new FileNode(false, path[0], content, null));
+                rootNodes.put(path[1], new FileNode(false, path[1], content, null));
             }
         } else {
-            FileNode fileNode = rootNodes.get(path[0]);
-            for (int i = 1; i < path.length - 1; i++) {
+            FileNode fileNode = rootNodes.get(path[1]);
+            for (int i = 2; i < path.length - 1; i++) {
                 String fileName = path[i];
                 fileNode = fileNode.subFiles.get(fileName);
             }
@@ -114,22 +114,16 @@ public class EugeneFileSystem {
     }
 
     public String readContentFromFile(String filePath) {
-        String[] path = splitWithoutEmpty(filePath, "/");
-        if(path.length == 1) {
-            return rootNodes.get(path[0]).content;
+        String[] path = filePath.split("/");
+        if(path.length == 2) {
+            return rootNodes.get(path[1]).content;
         } else {
-            FileNode fileNode = rootNodes.get(path[0]);
-            for (int i = 1; i < path.length; i++) {
+            FileNode fileNode = rootNodes.get(path[1]);
+            for (int i = 2; i < path.length; i++) {
                 String fileName = path[i];
                 fileNode = fileNode.subFiles.get(fileName);
             }
             return fileNode.content;
         }
-    }
-
-    public static String[] splitWithoutEmpty(String src, String split){
-        return Arrays.stream(src.split("/"))
-                .filter(splitPart -> !splitPart.isEmpty())
-                .toArray(String[]::new);
     }
 }
