@@ -34,13 +34,13 @@ public class EugeneFileSystem {
     static class FileNode {
         public boolean isDirectory;
         public String name;
-        public String content;
+        public StringBuilder content;
         public TreeMap<String, FileNode> subFiles;
 
         public FileNode(
                 boolean isDirectory,
                 String name,
-                String content,
+                StringBuilder content,
                 TreeMap<String, FileNode> subFiles) {
             this.isDirectory = isDirectory;
             this.name = name;
@@ -91,9 +91,9 @@ public class EugeneFileSystem {
         if (path.length == 2) {
             FileNode fileNode = rootNodes.get(path[1]);
             if (fileNode != null) {
-                fileNode.content += content;
+                fileNode.content.append(content);
             } else {
-                rootNodes.put(path[1], new FileNode(false, path[1], content, null));
+                rootNodes.put(path[1], new FileNode(false, path[1], new StringBuilder(content), null));
             }
         } else {
             FileNode fileNode = rootNodes.get(path[1]);
@@ -105,9 +105,9 @@ public class EugeneFileSystem {
             String fileName = path[path.length - 1];
             FileNode file = fileNode.subFiles.get(fileName);
             if (file != null) {
-                file.content += content;
+                file.content.append(content);
             } else {
-                fileNode.subFiles.put(fileName, new FileNode(false, fileName, content, null));
+                fileNode.subFiles.put(fileName, new FileNode(false, fileName, new StringBuilder(content), null));
             }
         }
     }
@@ -115,14 +115,14 @@ public class EugeneFileSystem {
     public String readContentFromFile(String filePath) {
         String[] path = filePath.split("/");
         if (path.length == 2) {
-            return rootNodes.get(path[1]).content;
+            return rootNodes.get(path[1]).content.toString();
         } else {
             FileNode fileNode = rootNodes.get(path[1]);
             for (int i = 2; i < path.length; i++) {
                 String fileName = path[i];
                 fileNode = fileNode.subFiles.get(fileName);
             }
-            return fileNode.content;
+            return fileNode.content.toString();
         }
     }
 }
