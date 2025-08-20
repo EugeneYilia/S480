@@ -36,3 +36,5 @@ bin/
 gradle/**
 .gradle/
 build/
+
+*.iml
