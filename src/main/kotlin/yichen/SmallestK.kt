@@ -3,6 +3,7 @@ package yichen
 class SmallestK {
     fun smallestK(arr: IntArray, k: Int): IntArray {
         quickSort(arr, 0, arr.size - 1)
+        // 左闭右开
         return arr.copyOfRange(0, k)
     }
 
