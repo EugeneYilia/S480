@@ -14,10 +14,14 @@ fun removeDuplicateLetters(s: String): String {
             val compareList = slowFindList.toMutableList()
             compareList.remove(number)
             compareList.add(number)
-            val resultOldString = slowFindList.reversed().joinToString("")
-            val resultNewString = compareList.reversed().joinToString("")
-            val resultNumNew = resultNewString.toInt()
-            val resultNumOld = resultOldString.toInt()
+            val lengthOfList = slowFindList.size
+            var resultNumNew = 0
+            var resultNumOld = 0
+
+            for (i in 0 until lengthOfList) {
+                resultNumNew += (i + 1) * compareList[i]
+                resultNumOld += (i + 1) * slowFindList[i]
+            }
 
             if (resultNumOld >= resultNumNew) {
                 slowFindList.remove(number)
