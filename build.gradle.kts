@@ -9,11 +9,13 @@ tasks.withType<JavaExec>().configureEach {
 
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
+    sourceCompatibility = "23"
+    targetCompatibility = "23"
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = "20"
+        jvmTarget = "23"
     }
 }
 

@@ -8,26 +8,28 @@ fun removeDuplicateLetters(s: String): String {
     val quickFindList = mutableSetOf<Int>()
     var finalString = ""
 
-    for (c in s.reversed()) {
+    for (c in s) {
         val number = c - 'a' + 1
         if (number in quickFindList) {
             val compareList = slowFindList.toMutableList()
             compareList.remove(number)
             compareList.add(number)
-            val lengthOfList = slowFindList.size
-            var resultNumNew = 0
-            var resultNumOld = 0
 
-            for (i in 0 until lengthOfList) {
-                resultNumNew += (i + 1) * compareList[i]
-                resultNumOld += (i + 1) * slowFindList[i]
+            val lengthOfList = slowFindList.size
+            var isReplace = false
+
+            fun compareEachNumber(oneList: List<Int>, twoList: List<Int>, i: Int): Boolean {
+                if(oneList[i] > twoList[i]) {
+                    return true
+                }else{
+                    return false
+                }
             }
 
-            if (resultNumOld >= resultNumNew) {
-                slowFindList.remove(number)
-                slowFindList.add(number)
-                finalString = finalString.replace(c.toString(), "")
-                finalString += c
+            var i = 0
+            if (!compareEachNumber(slowFindList, compareList, i)){
+                i = i + 1
+                compareEachNumber(slowFindList, compareList, i)
             }
 
 
@@ -37,5 +39,5 @@ fun removeDuplicateLetters(s: String): String {
             finalString += c
         }
     }
-    return finalString.reversed()
+    return finalString
 }
