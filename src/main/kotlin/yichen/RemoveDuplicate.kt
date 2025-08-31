@@ -42,8 +42,10 @@ fun removeDuplicateLetters(s: String): String {
         if(start == letterSize){
             if(result == null){
                 result = convertCharsToString(combination)
+                return
             } else {
                 compareAndUpdate(convertCharsToString(combination))
+                return
             }
         }
 
