@@ -11,6 +11,8 @@ public class SudokuBoolean {
         // 0-17
         int[][] connectedAreaChars = new int[board.length + board.length][9];
 
+        // 81
+        // 3 * 3 * 3 * 3 = 81
         for (int i = 0; i < 9; i += 3) {
             for (int j = 0; j < 9; j += 3) {
                 int[] matrixNumber = new int[9];
