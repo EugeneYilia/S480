@@ -1,6 +1,3 @@
-import java.util.HashMap;
-import java.util.HashSet;
-
 public class SudokuBoolean {
 
     // 只检查已有数字是否冲突
@@ -9,35 +6,36 @@ public class SudokuBoolean {
     // 只是局部合法性判断，不是全局可解性判断
     public boolean isValidSudoku(char[][] board) {
 
-        HashMap<Integer, HashSet<Character>> connectedAreaChars = new HashMap<Integer, HashSet<Character>>();
+        // 9 9
+        // 18
+        // 0-17
+        int[][] connectedAreaChars = new int[board.length + board.length][9];
 
         for (int i = 0; i < 9; i += 3) {
             for (int j = 0; j < 9; j += 3) {
-                HashSet<Character> matrixNumber = new HashSet<Character>();
+                int[] matrixNumber = new int[9];
                 for (int row = i; row < i + 3; row++) {
                     for (int col = j; col < j + 3; col++) {
                         if (board[row][col] == '.') {
                             continue;
                         }
 
-                        connectedAreaChars.computeIfAbsent(row, _ -> new HashSet<Character>());
-                        if (connectedAreaChars.get(row).contains(board[row][col])) {
+                        if (connectedAreaChars[row][board[row][col] - '1'] == 1) {
                             return false;
                         } else {
-                            connectedAreaChars.get(row).add(board[row][col]);
+                            connectedAreaChars[row][board[row][col] - '1'] = 1;
                         }
 
-                        connectedAreaChars.computeIfAbsent(col + 9, _ -> new HashSet<Character>());
-                        if (connectedAreaChars.get(col + 9).contains(board[row][col])) {
+                        if (connectedAreaChars[col + 9][board[row][col] - '1'] == 1) {
                             return false;
                         } else {
-                            connectedAreaChars.get(col + 9).add(board[row][col]);
+                            connectedAreaChars[col + 9][board[row][col] - '1'] = 1;
                         }
 
-                        if (matrixNumber.contains(board[row][col])) {
+                        if (matrixNumber[board[row][col] - '1'] == 1) {
                             return false;
                         } else {
-                            matrixNumber.add(board[row][col]);
+                            matrixNumber[board[row][col] - '1'] = 1;
                         }
                     }
                 }
@@ -46,5 +44,4 @@ public class SudokuBoolean {
 
         return true;
     }
-
 }
