@@ -11,16 +11,16 @@ fun removeDuplicateLetters(s: String): String {
     var finalString = ""
 
     fun compareEachNumber(newList: List<Int>, oldList: List<Int>, i: Int): Boolean {
-        while (i < newList.size){
-            if (newList[i] == oldList[i]){
+
+        if (i < newList.size && newList[i] == oldList[i]) {
                 compareEachNumber(newList, oldList, i + 1)
-            }else if (newList[i] < oldList[i]){
+        } else if (i < newList.size && newList[i] < oldList[i]) {
                 return true
-            }else {
+        } else{
                 return false
-            }
         }
-        return false
+
+        return true
     }
 
     for (c in s) {
@@ -30,10 +30,16 @@ fun removeDuplicateLetters(s: String): String {
             compareList.remove(number)
             compareList.add(number)
             val isReplace = compareEachNumber(compareList, slowFindList, 0)
+
+            println(isReplace)
+
             if (isReplace) {
                 slowFindList.remove(number)
                 slowFindList.add(number)
-                finalString.replace(c.toString(), "")
+                finalString.replace(Regex(c.toString()), "")//未删掉
+
+                println("one:" + finalString)
+
                 finalString += c
             }
 
