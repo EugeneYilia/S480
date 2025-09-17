@@ -1,3 +1,9 @@
+allprojects {
+    repositories.all {
+        (this as? MavenArtifactRepository)?.let { it.isAllowInsecureProtocol = true }
+    }
+}
+
 plugins {
     kotlin("jvm") version "2.1.10"
     application
