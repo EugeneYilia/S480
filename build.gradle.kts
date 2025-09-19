@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 allprojects {
     repositories.all {
         (this as? MavenArtifactRepository)?.let { it.isAllowInsecureProtocol = true }
@@ -20,8 +22,8 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "23"
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_23)
     }
 }
 
