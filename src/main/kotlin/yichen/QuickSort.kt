@@ -27,7 +27,7 @@ fun quickSortInternal(array: IntArray, start: Int, end: Int) {
             frontIndex++;
         }
 
-        if(backIndex > frontIndex) {
+        if (backIndex > frontIndex) {
             val frontValue = array[frontIndex]
             array[frontIndex] = array[backIndex]
             array[backIndex] = frontValue
