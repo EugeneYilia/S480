@@ -1,109 +1,146 @@
-//package yichen
+// Deprecated
+// 有问题
+
+package yichen
+
+//默认题目描述
+//输入：
+//board =
+//[['X','X','X','X'],
+// ['X','O','O','X'],
+// ['X','X','O','X'],
+// ['X','O','X','X']]
 //
-////默认题目描述
-////
-////输入：
-////
-////board =
-////
-////[['X','X','X','X'],['X','O','O','X'],['X','X','O','X'],['X','O','X','X']]
-////
-////输出：
-////
-////[['X','X','X','X'],['X','X','X','X'],['X','X','X','X'],['X','O','X','X']]
-//
-//
-//fun main(args: Array<String>) {
-//
-//}
-//
-//fun updateConnectedAreas(src: Array<Int>, area1: Int, area2: Int){
-//    if(src[area2] == area2){
-//        src[area1] = area2
-//    } else {
-//        var areaId = getConnectedArea(src, src[area2])
-//        src[area2] = areaId
-//        src[area1] = areaId
-//    }
-//}
-//
-//fun getConnectedArea(src: Array<Int>, area1: Int): Int{
-//    if(src[area1] == area1){
-//        return area1
-//    } else {
-//        return getConnectedArea(src, src[area1])
-//    }
-//}
-//
-//public class Region{
-//    public var head: Int = -1
-//    public var elements: HashSet<String> = HashSet()
-//    public var isLive = false
-//}
-//
-//fun calcRemovePart(src: ArrayList<ArrayList<String>>)
-//{
-//    val row = src.size;
-//    val column = src[0].size;
-//
-//    if(row < 2 || column < 2){
-//        return
-//    }
-//
-//    var connectedAreas: Array<Int> = Array<Int>(row+column, ()-> 0)
-//    for(i in 0..<row+column){
-//        connectedAreas[i] = i
-//    }
-//
-//    var regions : ArrayList<Region> = ArrayList<Region>()
-//
-//    for(rowIndex in 1..row-2){
-//        for(columnIndex in 1..column-2){
-//            if(src[rowIndex][columnIndex] == "O"){
-//                updateConnectedAreas(connectedAreas, rowIndex, columnIndex)
-//            }
-//        }
-//    }
-//
-//    for(rowIndex in 1..row-2){
-//        for(columnIndex in 1..column-2){
-//            if(src[rowIndex][columnIndex] == "O"){
-//                var regionIndex = getConnectedArea(connectedAreas, columnIndex);
-//                var region = regions.where(region => region.head == regionIndex).firstOrDefault();
-//                if(region is null){
-//                    region = Region()
-//                    region.head = regionIndex;
-//                    region.elements.add(src[rowIndex][columnIndex]);
-//                    regions.add(region);
-//                } else {
-//                    region.elements.add(src[rowIndex][columnIndex]);
-//                }
-//
-//                if(rowIndex == 1){
-//                    if(src[0][columnIndex] == "O"){
-//                        region.isLive = true
-//                        continue
-//                    }
-//                }
-//
-//                if(rowIndex == row-2){
-//                    if(src[row-1][columnIndex] == "0"){
-//                        region.isLive = true
-//                        continue
-//                    }
-//                }
-//
-//                if(columnIndex == 1){
-//                    if(src[rowIndex][0] == "0"){
-//                        region.isLive = true
-//                        continue
-//                    }
-//                }
-//
-//                if(columnIndex == column - 2){
-//                    if()
-//                }
-//            }
-//        }
-//    }
-//}
+//输出：
+//[['X','X','X','X'],
+// ['X','X','X','X'],
+// ['X','X','X','X'],
+// ['X','O','X','X']]
+
+
+fun main(args: Array<String>) {
+
+}
+
+// [
+// ["O","X","X","O","X"],
+// ["X","O","O","X","O"],
+// ["X","O","X","O","X"],
+// ["O","X","O","O","O"],
+// ["X","X","O","X","O"]
+// ]
+
+// output
+// [
+// ["O","X","X","O","X"],
+// ["X","O","O","X","O"],
+// ["X","O","X","O","X"],
+// ["O","X","O","O","O"],
+// ["X","X","O","X","O"]]
+
+// expected
+// [
+// ["O","X","X","O","X"],
+// ["X","X","X","X","O"],
+// ["X","X","X","O","X"],
+// ["O","X","O","O","O"],
+// ["X","X","O","X","O"]]
+fun solve(board: Array<CharArray>): Unit {
+    val row = board.size;
+    val column = board[0].size;
+
+    if (row < 2 || column < 2) {
+        return
+    }
+
+    val connectedAreas = IntArray(row + column)
+    for (i in 0..<row + column) {
+        connectedAreas[i] = i
+    }
+
+    for (rowIndex in 1..row - 2) {
+        for (columnIndex in 1..column - 2) {
+            if (board[rowIndex][columnIndex] == 'O') {
+                updateConnectedAreas(connectedAreas, rowIndex, columnIndex)
+            }
+        }
+    }
+
+    val regions = ArrayList<Region>()
+
+    for (rowIndex in 1..row - 2) {
+        for (columnIndex in 1..column - 2) {
+            if (board[rowIndex][columnIndex] == 'O') {
+                val regionIndex = getConnectedArea(connectedAreas, columnIndex);
+                var region = regions.firstOrNull { region -> region.head == regionIndex };
+                if (region == null) {
+                    region = Region()
+                    region.head = regionIndex;
+                    region.elements.add(Pair(rowIndex, columnIndex));
+                    regions.add(region);
+                } else {
+                    region.elements.add(Pair(rowIndex, columnIndex));
+                }
+
+                if (rowIndex == 1) {
+                    if (board[0][columnIndex] == 'O') {
+                        region.isLive = true
+                        continue
+                    }
+                }
+
+                if (rowIndex == row - 2) {
+                    if (board[row - 1][columnIndex] == 'O') {
+                        region.isLive = true
+                        continue
+                    }
+                }
+
+                if (columnIndex == 1) {
+                    if (board[rowIndex][0] == 'O') {
+                        region.isLive = true
+                        continue
+                    }
+                }
+
+                if (columnIndex == column - 2) {
+                    if (board[rowIndex][column - 1] == '0'){
+                        region.isLive = true
+                        continue
+                    }
+                }
+            }
+        }
+    }
+
+    for(region in regions) {
+        if(!region.isLive){
+            for((rowIndex, columnIndex) in region.elements){
+                board[rowIndex][columnIndex] = 'X';
+            }
+        }
+    }
+}
+
+fun updateConnectedAreas(src: IntArray, area1: Int, area2: Int) {
+    if (src[area2] == area2) {
+        src[area1] = area2
+    } else {
+        src[area2] = getConnectedArea(src, src[area2])
+        src[area1] = src[area2]
+    }
+}
+
+fun getConnectedArea(src: IntArray, areaId: Int): Int {
+    return if (src[areaId] == areaId) {
+        areaId
+    } else {
+        getConnectedArea(src, src[areaId])
+    }
+}
+
+class Region {
+    public var head: Int = -1
+    public var elements: HashSet<Pair<Int, Int>> = HashSet()
+    public var isLive = false
+}
