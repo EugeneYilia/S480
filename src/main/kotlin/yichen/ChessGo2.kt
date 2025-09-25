@@ -6,6 +6,7 @@ class ChessGo2 {
         var column = 0
         var isVisited = false
     }
+
     fun solve(board: Array<CharArray>): Unit {
         val row = board.size
         val column = board[0].size
@@ -15,6 +16,7 @@ class ChessGo2 {
         }
 
         val rootNodes = HashSet<Pair<Int, Int>>()
+        val connectedNode = HashSet<Pair<Int, Int>>()
 
         for (col in 0..<column) {
             if (board[0][col] == 'O') {
@@ -26,16 +28,31 @@ class ChessGo2 {
             }
         }
 
-        for(r in 0..<row){
-            if(board[r][0] == 'O'){
+        for (r in 0..<row) {
+            if (board[r][0] == 'O') {
                 rootNodes.add(Pair(r, 0))
             }
 
-            if(board[r][column - 1] == 'O') {
+            if (board[r][column - 1] == 'O') {
                 rootNodes.add(Pair(r, column - 1))
             }
         }
 
+        fun searchFromRootNode(node: Pair<Int, Int>) {
+            val row = node.first
+            val column = node.second
+        }
 
+        for (node in rootNodes) {
+            searchFromRootNode(node)
+        }
+
+        for (row in 1..<row - 1) {
+            for (col in 1..<column - 1) {
+                if (board[row][col] == 'O' && !connectedNode.contains(Pair(row, col))) {
+                    board[row][col] = 'X'
+                }
+            }
+        }
     }
 }
