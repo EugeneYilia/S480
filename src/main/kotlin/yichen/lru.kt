@@ -1,6 +1,6 @@
 package yichen
 
-fun main(){
+fun main() {
     val cache = LRUCache(2)
     cache.put(1, 1) // cache is {1=1}
     cache.put(2, 2) // cache is {1=1, 2=2}
@@ -13,14 +13,14 @@ fun main(){
     println(cache.get(4))    // return 4
 }
 
-class CacheNode(){
+class CacheNode() {
     var key: Int = 0
     var value: Int = 0
     var previous: CacheNode? = null
     var next: CacheNode? = null
 }
 
-class LRUCache(capacity: Int){
+class LRUCache(capacity: Int) {
     var cacheSize: Int = 0
     var cache: HashMap<Int, CacheNode> = HashMap()
     var first: CacheNode = CacheNode()
@@ -32,9 +32,9 @@ class LRUCache(capacity: Int){
         last.previous = first
     }
 
-    fun put(key: Int, value: Int){
+    fun put(key: Int, value: Int) {
         val node = cache.get(key)
-        if(node != null){
+        if (node != null) {
             node.value = value
 
             node.previous!!.next = node.next
@@ -55,7 +55,7 @@ class LRUCache(capacity: Int){
             newCacheNode.next = last
             last.previous = newCacheNode
 
-            if(cache.size > cacheSize){
+            if (cache.size > cacheSize) {
                 val removeCache = first.next
                 cache.remove(removeCache!!.key)
 
@@ -65,9 +65,9 @@ class LRUCache(capacity: Int){
         }
     }
 
-    fun get(key: Int): Int{
+    fun get(key: Int): Int {
         val node = cache.get(key)
-        if(node == null){
+        if (node == null) {
             return -1
         } else {
             node.previous!!.next = node.next
