@@ -1,3 +1,5 @@
+package yichen
+
 fun singleNumber(nums: IntArray): Int {
     var result = 0
     for(num in nums){
