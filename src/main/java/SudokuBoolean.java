@@ -9,35 +9,35 @@ public class SudokuBoolean {
         // 9 9
         // 18
         // 0-17
-        int[][] connectedAreaChars = new int[board.length + board.length][9];
+        boolean[][] connectedAreaChars = new boolean[board.length + board.length][9];
 
         // 81
-        // 3 * 3 * 3 * 3 = 81
+        // 3 * 3 * 3 * 3 = 81.
         for (int i = 0; i < 9; i += 3) {
             for (int j = 0; j < 9; j += 3) {
-                int[] matrixNumber = new int[9];
+                boolean[] matrixNumber = new boolean[9];
                 for (int row = i; row < i + 3; row++) {
                     for (int col = j; col < j + 3; col++) {
                         if (board[row][col] == '.') {
                             continue;
                         }
 
-                        if (connectedAreaChars[row][board[row][col] - '1'] == 1) {
+                        if (connectedAreaChars[row][board[row][col] - '1']) {
                             return false;
                         } else {
-                            connectedAreaChars[row][board[row][col] - '1'] = 1;
+                            connectedAreaChars[row][board[row][col] - '1'] = true;
                         }
 
-                        if (connectedAreaChars[col + 9][board[row][col] - '1'] == 1) {
+                        if (connectedAreaChars[col + 9][board[row][col] - '1']) {
                             return false;
                         } else {
-                            connectedAreaChars[col + 9][board[row][col] - '1'] = 1;
+                            connectedAreaChars[col + 9][board[row][col] - '1'] = true;
                         }
 
-                        if (matrixNumber[board[row][col] - '1'] == 1) {
+                        if (matrixNumber[board[row][col] - '1']) {
                             return false;
                         } else {
-                            matrixNumber[board[row][col] - '1'] = 1;
+                            matrixNumber[board[row][col] - '1'] = true;
                         }
                     }
                 }

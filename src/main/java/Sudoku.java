@@ -4,7 +4,7 @@ import java.util.HashSet;
 public class Sudoku {
 
     public static Character[] getPossibleNumbers(char[][] src, int row, int column) {
-        HashSet<Character> possibleValues = new HashSet<Character>(Arrays.asList('1', '2', '3', '4', '5', '6', '7', '8', '9'));
+        HashSet<Character> possibleValues = new HashSet<>(Arrays.asList('1', '2', '3', '4', '5', '6', '7', '8', '9'));
 
         for (char ele : src[row]) {
             possibleValues.remove(ele);
@@ -27,9 +27,9 @@ public class Sudoku {
     }
 
     public static boolean checkMatrixIsRight(char[][] src) {
-        for (int i = 0; i < src.length; i++) {
+        for (char[] chars : src) {
             for (int j = 0; j < src[0].length; j++) {
-                if (src[i][j] == '.') {
+                if (chars[j] == '.') {
                     return false;
                 }
             }
@@ -56,8 +56,8 @@ public class Sudoku {
             }
         }
 
-        for (int i = 0; i < possibleNumbers.length; i++) {
-            board[rowStart][columnStart] = possibleNumbers[i];
+        for (Character possibleNumber : possibleNumbers) {
+            board[rowStart][columnStart] = possibleNumber;
             if (checkMatrixIsRight(board)) {
                 return;
             }
