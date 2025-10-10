@@ -58,6 +58,10 @@ public class Sudoku {
                 existNumCount = (byte) possibleNumsCount;
                 curPoint = point;
                 pointValue = (short) possibleNums;
+
+                if(possibleNumsCount == 8){
+                    break;
+                }
             }
         }
 
