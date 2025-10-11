@@ -3,20 +3,32 @@ public class Sudoku {
     private final short[] cols = new short[9];
     private final short[] boxes = new short[9];
 
-    private final byte[] emptyPoints = new byte[81];
+    private final byte[] emptyPointsRow = new byte[81];
+    private final byte[] emptyPointsCol = new byte[81];
+
     private byte emptyPointsSize = 0;
     private byte filledPointsSize = 0;
 
     //  1             2              3            4          5              6              7                8             9
     // 00000001      00000010      00000100     00001000   00010000      00100000       01000000        10000000
-    private static final short allValueNum = 511;
+    private static final int allValueNum = 511;
 
+    // row 0-8
+    // col 0-8
+    // * 9
+    // (0,0) 0   (0,8) 8
+    // (1,0) 10  (1,8) 17
+    // (2,0) 18  (2,8) 26
+
+    // 20 -> 2,2
     public void checkMatrix(char[][] src) {
         for (byte i = 0; i < src.length; i++) {
             for (byte j = 0; j < src[0].length; j++) {
                 char c = src[i][j];
                 if (c == '.') {
-                    emptyPoints[emptyPointsSize++] = (byte) (i * 10 + j);
+                    byte curPointIndex = emptyPointsSize++;
+                    emptyPointsRow[curPointIndex] = i;
+                    emptyPointsCol[curPointIndex] = j;
                 } else {
                     // [0,8]
                     short mask = (short) (1 << (c - '1'));
@@ -39,7 +51,8 @@ public class Sudoku {
     }
 
     public void solveSudokuInternal(char[][] board) {
-        byte curPoint = -1;
+        byte row = -1;
+        byte col = -1;
         byte minPointIndex = -1;
         byte existNumCount = Byte.MIN_VALUE;
         short pointValue = -1;
@@ -47,16 +60,16 @@ public class Sudoku {
         // all 5   filled 3
         // 0-4     0-2    3-4
         for (byte i = filledPointsSize; i < emptyPointsSize; i++) {
-            byte point = emptyPoints[i];
-            byte row = (byte) (point / 10);
-            byte col = (byte) (point % 10);
+            byte curRow = emptyPointsRow[i];
+            byte curCol = emptyPointsCol[i];
 
-            int possibleNums = rows[row] | cols[col] | boxes[row / 3 * 3 + col / 3];
+            int possibleNums = rows[curRow] | cols[curCol] | boxes[curRow / 3 * 3 + curCol / 3];
             int possibleNumsCount = Integer.bitCount(possibleNums);
             if (possibleNumsCount > existNumCount) {
                 minPointIndex = i;
                 existNumCount = (byte) possibleNumsCount;
-                curPoint = point;
+                row = curRow;
+                col = curCol;
                 pointValue = (short) possibleNums;
 
                 if(possibleNumsCount == 8){
@@ -65,13 +78,14 @@ public class Sudoku {
             }
         }
 
-        emptyPoints[minPointIndex] = emptyPoints[filledPointsSize];
-        emptyPoints[filledPointsSize] = curPoint;
+        emptyPointsRow[minPointIndex] = emptyPointsRow[filledPointsSize];
+        emptyPointsRow[filledPointsSize] = row;
+
+        emptyPointsCol[minPointIndex] = emptyPointsCol[filledPointsSize];
+        emptyPointsCol[filledPointsSize] = col;
 
         filledPointsSize++;
 
-        byte row = (byte) (curPoint / 10);
-        byte col = (byte) (curPoint % 10);
 
         // 1111 ^ 1101 = 0010
         //               可选元素结果集
