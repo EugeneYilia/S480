@@ -18,12 +18,15 @@ fun threeSum(nums: IntArray): List<List<Int>> {
         var lastLeftNum: Int? = null
         var lastRightNum: Int? = null
 
+        var leftNeedValue: Int? = null
+        var rightNeedValue: Int? = null
+
         while (true) {
-            while (leftIndex < rightIndex && nums[leftIndex] == lastLeftNum) {
+            while (leftIndex < rightIndex && (nums[leftIndex] == lastLeftNum || (leftNeedValue != null && nums[leftIndex] < leftNeedValue))) {
                 leftIndex++
             }
 
-            while (leftIndex < rightIndex && nums[rightIndex] == lastRightNum) {
+            while (leftIndex < rightIndex && (nums[rightIndex] == lastRightNum || (rightNeedValue != null && nums[rightIndex] > rightNeedValue))) {
                 rightIndex--
             }
 
@@ -43,10 +46,10 @@ fun threeSum(nums: IntArray): List<List<Int>> {
                 lastRightNum = rightNum
             } else if (sum < 0) {
                 leftIndex++
-                lastLeftNum = leftNum
+                leftNeedValue = 0 - (num + rightNum)
             } else {
                 rightIndex--
-                lastRightNum = rightNum
+                rightNeedValue = 0 - (num + leftNum)
             }
         }
 
