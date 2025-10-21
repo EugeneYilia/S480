@@ -7,9 +7,9 @@ data class TreeNode(
 )
 
 // 不满二叉树，找出递增序列最长的层高
-fun main(){
+fun main() {
     var root = TreeNode(TreeNode(null, null, 3), TreeNode(TreeNode(null, null, 6), null, 5), 4)
-    println(calcMaxHigh(root))
+    println(longestConsecutive(root))
 }
 
 // https://leetcode.cn/problems/binary-tree-longest-consecutive-sequence/description/
@@ -38,27 +38,23 @@ fun main(){
 //
 //树中节点的数目在范围 [1, 3 * 104] 内
 //-3 * 104 <= Node.val <= 3 * 104
-fun calcMaxHigh(root: TreeNode?): Int {
-    if(root == null) {
-        return 0
-    }
+fun longestConsecutive(root: TreeNode?): Int {
+    root ?: return 0
 
     var maxHigh = 1
 
-    fun calcHigh(node: TreeNode, high: Int){
-        if(high > maxHigh){
-            maxHigh = high
-        }
+    fun calcHigh(node: TreeNode, high: Int) {
+        maxHigh = maxOf(high, maxHigh)
 
-        if(node.left!= null && node.left!!.`val` == node.`val` + 1){
+        if (node.left != null && node.left!!.`val` == node.`val` + 1) {
             calcHigh(node.left!!, high + 1)
-        } else if(node.left!= null){
+        } else if (node.left != null) {
             calcHigh(node.left!!, 1)
         }
 
-        if(node.right!= null && node.right!!.`val` == node.`val` + 1){
+        if (node.right != null && node.right!!.`val` == node.`val` + 1) {
             calcHigh(node.right!!, high + 1)
-        } else if(node.right!= null){
+        } else if (node.right != null) {
             calcHigh(node.right!!, 1)
         }
     }
