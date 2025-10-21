@@ -2,118 +2,73 @@ package yichen
 
 import java.util.LinkedList
 
-// Design Snake game:
-//
-// The initial length is 3, and the length increases by 1 every 5 steps.
-//
-// The game ends if the snake hits a wall or bites itself.
-//
-// Implement a function: bool step(string direction).
-// Write a few test cases to verify it
+fun main() {
+    val snakeGame = SnakeGame(2, 2, arrayOf(intArrayOf(1, 1), intArrayOf(0, 0)))
+    // ["R"],["D"],["R"],["U"],["L"],["U"]
+    println(snakeGame.move("R"))
+    println(snakeGame.move("D"))
+    println(snakeGame.move("L"))
+    println(snakeGame.move("U"))
+    println(snakeGame.move("R"))
+}
 
-class SnakeGame {
-    val rows = 100
-    val columns = 100
-    val currentPos = Pair(50, 50)
-    val walls = HashSet<Pair<Int, Int>>()
-    val snakes = LinkedList<Pair<Int, Int>>()
-    val foods = HashSet<Pair<Int, Int>>()
-    val foodReward = 3
+class SnakeGame(width: Int, height: Int, food: Array<IntArray>) {
+    val rows = height
+    val columns = width
+    val foods = food
 
-    fun step(dir: String): Boolean {
+    var currentPos = Pair(0, 0)
+    val snakes = LinkedList<Pair<Int, Int>>().apply { add(Pair(0, 0)) }
+
+    var score = 0
+    var foodIndex = 0
+
+    fun move(direction: String): Int {
         var currentRow = currentPos.first
         var currentCol = currentPos.second
 
-        if (dir == "w") {
+        if (direction == "U") {
             currentRow--
             if (currentRow < 0) {
-                return false
+                return -1
             }
-        } else if (dir == "a") {
+        } else if (direction == "L") {
             currentCol--
             if (currentCol < 0) {
-                return false
+                return -1
             }
-        } else if (dir == "s") {
+        } else if (direction == "D") {
             currentRow++
             if (currentRow > rows - 1) {
-                return false
+                return -1
             }
-        } else if (dir == "d") {
+        } else if (direction == "R") {
             currentCol++
             if (currentCol > columns - 1) {
-                return false
+                return -1
             }
         }
 
-        snakes.remove(snakes.last())
-
-        if (foods.contains(Pair(currentRow, currentCol))) {
-            val body = snakes[snakes.size - 2]
-            var tail = snakes[snakes.size - 1]
-
-            val bodyRow = body.first
-            val bodyCol = body.second
-            val tailRow = tail.first
-            val tailCol = tail.second
-
-            if (bodyRow != tailRow) {
-                if (bodyRow > tailRow) {
-                    var currentRow = tailRow
-                    val currentCol = tailCol
-                    for (i in 0..<foodReward) {
-                        currentRow--
-                        val newTail = Pair(currentRow, currentCol)
-                        if (walls.contains(newTail) || snakes.contains(newTail)) {
-                            return false
-                        }
-                        snakes.add(newTail)
-                    }
-                } else {
-                    var currentRow = tailRow
-                    val currentCol = tailCol
-                    for (i in 0..<foodReward) {
-                        currentRow++
-                        val newTail = Pair(currentRow, currentCol)
-                        if (walls.contains(newTail) || snakes.contains(newTail)) {
-                            return false
-                        }
-                        snakes.add(newTail)
-                    }
-                }
+        if (foodIndex < foods.size) {
+            val curFood = foods[foodIndex]
+            if (currentRow == curFood[0] && currentCol == curFood[1]) {
+                score++
+                foodIndex++
             } else {
-                if (bodyCol > tailCol) {
-                    val currentRow = tailRow
-                    var currentCol = tailCol
-                    for (i in 0..<foodReward) {
-                        currentCol--
-                        val newTail = Pair(currentRow, currentCol)
-                        if (walls.contains(newTail) || snakes.contains(newTail)) {
-                            return false
-                        }
-                        snakes.add(newTail)
-                    }
-                } else {
-                    val currentRow = tailRow
-                    var currentCol = tailCol
-                    for (i in 0..<foodReward) {
-                        currentCol++
-                        val newTail = Pair(currentRow, currentCol)
-                        if (walls.contains(newTail) || snakes.contains(newTail)) {
-                            return false
-                        }
-                        snakes.add(newTail)
-                    }
-                }
+                snakes.remove(snakes.last())
             }
+        } else {
+            snakes.remove(snakes.last())
         }
 
-        if (walls.contains(Pair(currentRow, currentCol)) || snakes.contains(Pair(currentRow, currentCol))) {
-            return false
+        if (snakes.contains(Pair(currentRow, currentCol))) {
+            return -1
         }
 
-        snakes.add(Pair(currentRow, currentCol))
+        val newPosition = Pair(currentRow, currentCol)
+        currentPos = newPosition
+        snakes.addFirst(newPosition)
 
-        return true
+        return score
     }
 }
