@@ -3,7 +3,7 @@ package yichen
 import java.util.LinkedList
 
 fun main() {
-    val snakeGame = SnakeGame(2, 2, arrayOf(intArrayOf(1, 1), intArrayOf(0, 0)))
+    val snakeGame = SnakeGameByHashSet(2, 2, arrayOf(intArrayOf(1, 1), intArrayOf(0, 0)))
     // ["R"],["D"],["R"],["U"],["L"],["U"]
     println(snakeGame.move("R"))
     println(snakeGame.move("D"))
@@ -12,20 +12,24 @@ fun main() {
     println(snakeGame.move("R"))
 }
 
-class SnakeGame(width: Int, height: Int, food: Array<IntArray>) {
+class SnakeGameByHashSet(width: Int, height: Int, food: Array<IntArray>) {
     val rows = height
     val columns = width
     val foods = food
 
-    var currentPos = 0
-    val snakes = LinkedList<Int>().apply { add(0) }
+    var head = 0
+    val snakesSet = HashSet<Int>().apply { add(0) }
+    val snakesList = LinkedList<Int>().apply { add(0) }
 
     var score = 0
     var foodIndex = 0
+    // 列数进制
+    // 9 0-8
 
     fun move(direction: String): Int {
-        var currentRow = currentPos / columns
-        var currentCol = currentPos % columns
+        var currentRow = head / columns
+        var currentCol = head % columns
+
         if (direction == "U") {
             currentRow--
             if (currentRow < 0) {
@@ -54,18 +58,19 @@ class SnakeGame(width: Int, height: Int, food: Array<IntArray>) {
                 score++
                 foodIndex++
             } else {
-                snakes.removeLast()
+                snakesSet.remove(snakesList.removeLast())
             }
         } else {
-            snakes.removeLast()
+            snakesSet.remove(snakesList.removeLast())
         }
 
-        currentPos = currentRow * columns + currentCol
-        if (snakes.any { body -> body == currentPos }) {
+        head = currentRow * columns + currentCol
+        if (snakesSet.contains(head)) {
             return -1
         }
 
-        snakes.addFirst(currentPos)
+        snakesSet.add(head)
+        snakesList.addFirst(head)
 
         return score
     }
