@@ -1,5 +1,3 @@
-package yichen;
-
 public class BinarySearch {
     public int search(int[] nums, int target) {
         // write your code here.
