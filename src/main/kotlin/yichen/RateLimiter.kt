@@ -17,7 +17,9 @@ class RateLimiter(var requestBuffer: ArrayList<Request>) {
         while (true) {
             val currentTimeMills = System.currentTimeMillis()
 
-            if (requestTime.size == 10 && currentTimeMills - requestTime.first < 1000) {
+            val waitTime = 1000 - currentTimeMills + requestTime.first
+            if (requestTime.size == 10 && waitTime > 0) {
+                Thread.sleep(waitTime)
                 continue
             }
 
