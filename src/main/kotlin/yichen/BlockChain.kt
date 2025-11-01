@@ -199,6 +199,7 @@ data class Response(
 interface BlockChain {
     fun broadcast(tx: Tx): Response
     fun getTx(hash: ByteArray): TxResult
+
     //
     fun getNonce(address: Address): Long
 }
@@ -236,26 +237,31 @@ class MoneySender(
 
             val res = blk.broadcast(tx)
             if (res.code != 0) {
-                throw RuntimeException("failed to broadcast tx: $res")
+                throw RuntimeException("failed to broadcast tx uuid: ${req.getUUID()}  code: ${res.code}")
             }
 
             // 等待确认（这里应该异步或回调，避免阻塞 >10ms）
             while (true) {
-                try {
-                    getDetail(req.getUUID())
-                    break
-                } catch (e: Exception) {
-                    Thread.sleep(1000) // 模拟重试
+                val txResult = getDetail(req.getUUID())
+                if (txResult == null) {
+                    Thread.sleep(1000)
+                    continue
+                } else {
+                    if (txResult.execCode == 0) {
+                        println("tx ${req.getUUID()} exec success")
+                    } else {
+                        throw RuntimeException("tx ${req.getUUID()} exec error")
+                    }
                 }
             }
         }
     }
 
     fun getDetail(id: UUID): TxResult? {
-        val txHash = storage.get(id) ?: throw RuntimeException("txID not found")
+        val txHash = storage.get(id) ?: throw RuntimeException("txHash not found by uuid: ${id}")
         return try {
             blk.getTx(txHash)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
