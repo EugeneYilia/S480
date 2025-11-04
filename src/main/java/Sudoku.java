@@ -56,7 +56,7 @@ public class Sudoku {
         byte row = -1;
         byte col = -1;
         byte minPointIndex = -1;
-        byte existNumCount = Byte.MIN_VALUE;
+        byte usedNumCount = Byte.MIN_VALUE;
         short pointValue = -1;
 
         // all 5   filled 3
@@ -65,37 +65,38 @@ public class Sudoku {
             byte curRow = emptyPointsRow[i];
             byte curCol = emptyPointsCol[i];
 
-            int possibleNums = rows[curRow] | cols[curCol] | boxes[curRow / 3 * 3 + curCol / 3];
-            int possibleNumsCount = Integer.bitCount(possibleNums);
-            emptyPointsValues[i] = possibleNums;
-            if (possibleNumsCount > existNumCount) {
+            int usedNums = rows[curRow] | cols[curCol] | boxes[curRow / 3 * 3 + curCol / 3];
+            int curUsedNumCount = Integer.bitCount(usedNums);
+            emptyPointsValues[i] = usedNums;
+            if (curUsedNumCount > usedNumCount) {
                 minPointIndex = i;
-                existNumCount = (byte) possibleNumsCount;
+                usedNumCount = (byte) curUsedNumCount;
                 row = curRow;
                 col = curCol;
-                pointValue = (short) possibleNums;
+                pointValue = (short) usedNums;
 
-                if (possibleNumsCount == 8) {
+                if (curUsedNumCount == 8) {
                     break;
                 }
             }
         }
 
         // 单值优化
-        if (existNumCount != 8) {
+        if (usedNumCount != 8) {
             for (byte i = filledPointsSize; i < emptyPointsSize; i++) {
-                int possibleNums = emptyPointsValues[i];
+                int usedNums = emptyPointsValues[i];
 
                 boolean isValueSingle = true;
                 int singleValue = 0;
-                for (int value = 1; value <= 9; value++) {
+                for (int value = 0; value < 9; value++) {
+                    int exactValue = 1 << value;
                     isValueSingle = true;
-                    if ((value & possibleNums) == 0) {
+                    if ((exactValue & usedNums) == 0) {
                         for (int j = filledPointsSize + 1; j < emptyPointsSize; j++) {
                             if (emptyPointsRow[i] == emptyPointsRow[j]
                                     || emptyPointsCol[i] == emptyPointsCol[j]
                                     || emptyPointsRow[i] / 3 * 3 + emptyPointsCol[i] / 3 == emptyPointsRow[j] / 3 * 3 + emptyPointsCol[j] / 3) {
-                                if ((value & emptyPointsValues[j]) == 0) {
+                                if ((exactValue & emptyPointsValues[j]) == 0) {
                                     isValueSingle = false;
                                     break;
                                 }
@@ -103,7 +104,7 @@ public class Sudoku {
                         }
 
                         if (isValueSingle) {
-                            singleValue = value;
+                            singleValue = exactValue;
                             break;
                         }
                     } else {
