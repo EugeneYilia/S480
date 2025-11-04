@@ -6,6 +6,8 @@ public class Sudoku {
     private final byte[] emptyPointsRow = new byte[81];
     private final byte[] emptyPointsCol = new byte[81];
 
+    private final int[] emptyPointsValues = new int[81];
+
     private byte emptyPointsSize = 0;
     private byte filledPointsSize = 0;
 
@@ -65,6 +67,7 @@ public class Sudoku {
 
             int possibleNums = rows[curRow] | cols[curCol] | boxes[curRow / 3 * 3 + curCol / 3];
             int possibleNumsCount = Integer.bitCount(possibleNums);
+            emptyPointsValues[i] = possibleNums;
             if (possibleNumsCount > existNumCount) {
                 minPointIndex = i;
                 existNumCount = (byte) possibleNumsCount;
@@ -72,7 +75,46 @@ public class Sudoku {
                 col = curCol;
                 pointValue = (short) possibleNums;
 
-                if(possibleNumsCount == 8){
+                if (possibleNumsCount == 8) {
+                    break;
+                }
+            }
+        }
+
+        // 单值优化
+        if (existNumCount != 8) {
+            for (byte i = filledPointsSize; i < emptyPointsSize; i++) {
+                int possibleNums = emptyPointsValues[i];
+
+                boolean isValueSingle = true;
+                int singleValue = 0;
+                for (int value = 1; value <= 9; value++) {
+                    isValueSingle = true;
+                    if ((value & possibleNums) == 0) {
+                        for (int j = filledPointsSize + 1; j < emptyPointsSize; j++) {
+                            if (emptyPointsRow[i] == emptyPointsRow[j]
+                                    || emptyPointsCol[i] == emptyPointsCol[j]
+                                    || emptyPointsRow[i] / 3 * 3 + emptyPointsCol[i] / 3 == emptyPointsRow[j] / 3 * 3 + emptyPointsCol[j] / 3) {
+                                if ((value & emptyPointsValues[j]) == 0) {
+                                    isValueSingle = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (isValueSingle) {
+                            singleValue = value;
+                            break;
+                        }
+                    } else {
+                        isValueSingle = false;
+                    }
+                }
+                if (isValueSingle) {
+                    minPointIndex = i;
+                    pointValue = (short) (allValueNum ^ singleValue);
+                    row = emptyPointsRow[i];
+                    col = emptyPointsCol[i];
                     break;
                 }
             }
