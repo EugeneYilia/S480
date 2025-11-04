@@ -81,7 +81,7 @@ public class Sudoku {
             }
         }
 
-        // 单值优化
+        // 唯一可选值优化
         if (usedNumCount != 8) {
             for (byte i = filledPointsSize; i < emptyPointsSize; i++) {
                 int usedNums = emptyPointsValues[i];
@@ -92,7 +92,11 @@ public class Sudoku {
                     int exactValue = 1 << value;
                     isValueSingle = true;
                     if ((exactValue & usedNums) == 0) {
-                        for (int j = filledPointsSize + 1; j < emptyPointsSize; j++) {
+                        for (int j = filledPointsSize; j < emptyPointsSize; j++) {
+                            if (j == i) {
+                                continue;
+                            }
+
                             if (emptyPointsRow[i] == emptyPointsRow[j]
                                     || emptyPointsCol[i] == emptyPointsCol[j]
                                     || emptyPointsRow[i] / 3 * 3 + emptyPointsCol[i] / 3 == emptyPointsRow[j] / 3 * 3 + emptyPointsCol[j] / 3) {
