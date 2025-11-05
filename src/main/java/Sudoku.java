@@ -57,7 +57,7 @@ public class Sudoku {
         byte col = -1;
         byte minPointIndex = -1;
         byte usedNumCount = Byte.MIN_VALUE;
-        short pointValue = -1;
+        short pointUsedValue = -1;
 
         // all 5   filled 3
         // 0-4     0-2    3-4
@@ -73,8 +73,9 @@ public class Sudoku {
                 usedNumCount = (byte) curUsedNumCount;
                 row = curRow;
                 col = curCol;
-                pointValue = (short) usedNums;
+                pointUsedValue = (short) usedNums;
 
+                // 单一候选值
                 if (curUsedNumCount == 8) {
                     break;
                 }
@@ -160,7 +161,7 @@ public class Sudoku {
                 }
                 if (isValueSingle) {
                     minPointIndex = i;
-                    pointValue = (short) (allValueNum ^ singleValue);
+                    pointUsedValue = (short) (allValueNum ^ singleValue);
                     row = emptyPointsRow[i];
                     col = emptyPointsCol[i];
                     break;
@@ -179,7 +180,7 @@ public class Sudoku {
 
         // 1111 ^ 1101 = 0010
         //               可选元素结果集
-        short possibleNumber = (short) (allValueNum ^ pointValue);
+        short possibleNumber = (short) (allValueNum ^ pointUsedValue);
         // 1 2 4 8 16 32
 
         for (byte i = 0; i < 9; i++) {
