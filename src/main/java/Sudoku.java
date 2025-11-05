@@ -6,7 +6,7 @@ public class Sudoku {
     private final byte[] emptyPointsRow = new byte[81];
     private final byte[] emptyPointsCol = new byte[81];
 
-    private final int[] emptyPointsValues = new int[81];
+    private final int[] emptyPointsUsedValues = new int[81];
 
     private byte emptyPointsSize = 0;
     private byte filledPointsSize = 0;
@@ -67,7 +67,7 @@ public class Sudoku {
 
             int usedNums = rows[curRow] | cols[curCol] | boxes[curRow / 3 * 3 + curCol / 3];
             int curUsedNumCount = Integer.bitCount(usedNums);
-            emptyPointsValues[i] = usedNums;
+            emptyPointsUsedValues[i] = usedNums;
             if (curUsedNumCount > usedNumCount) {
                 minPointIndex = i;
                 usedNumCount = (byte) curUsedNumCount;
@@ -85,7 +85,7 @@ public class Sudoku {
         // 唯一可选值优化
         if (usedNumCount != 8) {
             for (byte i = filledPointsSize; i < emptyPointsSize; i++) {
-                int usedNums = emptyPointsValues[i];
+                int usedNums = emptyPointsUsedValues[i];
 
                 boolean isValueSingle = true;
                 int singleValue = 0;
@@ -103,7 +103,7 @@ public class Sudoku {
                                 continue;
                             }
 
-                            if ((exactValue & emptyPointsValues[j]) == 0) {
+                            if ((exactValue & emptyPointsUsedValues[j]) == 0) {
                                 isValueSingle = false;
                                 break;
                             }
@@ -124,7 +124,7 @@ public class Sudoku {
                                 continue;
                             }
 
-                            if ((exactValue & emptyPointsValues[j]) == 0) {
+                            if ((exactValue & emptyPointsUsedValues[j]) == 0) {
                                 isValueSingle = false;
                                 break;
                             }
@@ -145,7 +145,7 @@ public class Sudoku {
                                 continue;
                             }
 
-                            if ((exactValue & emptyPointsValues[j]) == 0) {
+                            if ((exactValue & emptyPointsUsedValues[j]) == 0) {
                                 isValueSingle = false;
                                 break;
                             }
