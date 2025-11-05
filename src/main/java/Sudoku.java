@@ -92,18 +92,61 @@ public class Sudoku {
                     int exactValue = 1 << value;
                     isValueSingle = true;
                     if ((exactValue & usedNums) == 0) {
+                        // 行
                         for (int j = filledPointsSize; j < emptyPointsSize; j++) {
                             if (j == i) {
                                 continue;
                             }
 
-                            if (emptyPointsRow[i] == emptyPointsRow[j]
-                                    || emptyPointsCol[i] == emptyPointsCol[j]
-                                    || emptyPointsRow[i] / 3 * 3 + emptyPointsCol[i] / 3 == emptyPointsRow[j] / 3 * 3 + emptyPointsCol[j] / 3) {
-                                if ((exactValue & emptyPointsValues[j]) == 0) {
-                                    isValueSingle = false;
-                                    break;
-                                }
+                            if(emptyPointsRow[i] != emptyPointsRow[j]){
+                                continue;
+                            }
+
+                            if ((exactValue & emptyPointsValues[j]) == 0) {
+                                isValueSingle = false;
+                                break;
+                            }
+                        }
+                        if (isValueSingle) {
+                            singleValue = exactValue;
+                            break;
+                        }
+
+                        isValueSingle = true;
+                        // 列
+                        for (int j = filledPointsSize; j < emptyPointsSize; j++) {
+                            if (j == i) {
+                                continue;
+                            }
+
+                            if(emptyPointsCol[i] != emptyPointsCol[j]){
+                                continue;
+                            }
+
+                            if ((exactValue & emptyPointsValues[j]) == 0) {
+                                isValueSingle = false;
+                                break;
+                            }
+                        }
+                        if (isValueSingle) {
+                            singleValue = exactValue;
+                            break;
+                        }
+
+                        isValueSingle = true;
+                        // 格子
+                        for (int j = filledPointsSize; j < emptyPointsSize; j++) {
+                            if (j == i) {
+                                continue;
+                            }
+
+                            if(emptyPointsRow[i] / 3 * 3 + emptyPointsCol[i] / 3 != emptyPointsRow[j] / 3 * 3 + emptyPointsCol[j] / 3){
+                                continue;
+                            }
+
+                            if ((exactValue & emptyPointsValues[j]) == 0) {
+                                isValueSingle = false;
+                                break;
                             }
                         }
 
